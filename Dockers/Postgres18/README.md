@@ -2,6 +2,15 @@
 
 This image is based on the official `postgres:18-alpine` and pre-configured with the `pg_partman` extension and optimized settings for high-throughput delivery processing.
 
+## Why PostgreSQL 18?
+
+We have chosen PostgreSQL 18 for this project to leverage its advanced high-performance features, which are critical for a high-volume delivery system like ThorMail:
+
+* **Asynchronous I/O (AIO)**: A game-changer for I/O-heavy workloads. It allows the database to handle multiple read/write operations concurrently, drastically reducing latency during high-volume delivery bursts.
+* **Parallel `COPY FROM`**: Significantly speeds up bulk data ingestion, which represents a massive performance boost when importing large contact lists or logs.
+* **Optimized `VACUUM`**: Crucial for our queue system. The new lazy pruning and internal improvements reduce the overhead of cleaning up dead tuples in our highly transactional tables.
+* **Native UUIDv7 Support**: Provides timestamp-ordered UUIDs natively, improving B-tree index locality and insertion performance compared to random UUIDs.
+
 ## Quick Start (Automated Setup)
 
 The easiest way to get started without cloning the repository or manually configuring Docker. This script works on Linux/macOS and requires only `docker` and `curl` (or `wget`).
@@ -72,28 +81,28 @@ The official PostgreSQL image uses this directory by default. Our configuration 
 
 This image inherits all functionality from the official Postgres Docker image. You can use standard environment variables for initialization:
 
-- **`POSTGRES_PASSWORD`**: (Required) Sets the superuser password.
-- **`POSTGRES_USER`**: (Optional) Sets the superuser name. Defaults to `postgres`.
-- **`POSTGRES_DB`**: (Optional) Creates a default database on startup. It is recommended to use `thormail_db` for this project.
-- **`PGDATA`**: (Optional) data directory location (default: `/var/lib/postgresql/data`).
+* **`POSTGRES_PASSWORD`**: (Required) Sets the superuser password.
+* **`POSTGRES_USER`**: (Optional) Sets the superuser name. Defaults to `postgres`.
+* **`POSTGRES_DB`**: (Optional) Creates a default database on startup. It is recommended to use `thormail_db` for this project.
+* **`PGDATA`**: (Optional) data directory location (default: `/var/lib/postgresql/data`).
 
 ## Connection Examples
 
 Depending on where your application is running, use the appropriate connection string:
 
-- **Local Machine (Host):**
+* **Local Machine (Host):**
   `postgres://postgres:password@localhost:5432/thormail_db`
-- **Remote Server:**
+* **Remote Server:**
   `postgres://postgres:password@<SERVER_IP>:5432/thormail_db`
-- **Other Docker Containers:**
+* **Other Docker Containers:**
   `postgres://postgres:password@thormail-postgres:5432/thormail_db`
 
 ## Configuration
 
 The image comes with a custom `postgresql.conf` located at `/etc/postgresql/postgresql.conf` which is optimized for:
 
-- High connection usage (Workers + API)
-- SSD storage
-- Aggressive Autovacuum settings for heavy write workloads (delivery queues)
+* High connection usage (Workers + API)
+* SSD storage
+* Aggressive Autovacuum settings for heavy write workloads (delivery queues)
 
 To override settings, you can mount your own config setup or pass arguments via command line, but it is recommended to use the provided configuration as a baseline.
