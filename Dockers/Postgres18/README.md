@@ -9,13 +9,13 @@ The easiest way to get started without cloning the repository or manually config
 Run this command in your terminal:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/ThorMail/thormail-ecosystem/main/Dockers/Postgres18/setup.sh | bash
+curl -sL https://raw.githubusercontent.com/thormail/thormail-ecosystem/main/Dockers/Postgres18/setup.sh | bash
 ```
 
 **Or using wget:**
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/ThorMail/thormail-ecosystem/main/Dockers/Postgres18/setup.sh | bash
+wget -qO- https://raw.githubusercontent.com/thormail/thormail-ecosystem/main/Dockers/Postgres18/setup.sh | bash
 ```
 
 This script will:

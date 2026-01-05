@@ -7,7 +7,7 @@
 set -e
 
 # Configuration
-RAW_BASE_URL="https://raw.githubusercontent.com/ThorMail/thormail-ecosystem/main/Dockers/Postgres18"
+RAW_BASE_URL="https://raw.githubusercontent.com/thormail/thormail-ecosystem/main/Dockers/Postgres18"
 IMAGE_NAME="thormail/postgres:18"
 CONTAINER_NAME="thormail-postgres"
 DEFAULT_PORT=5432
