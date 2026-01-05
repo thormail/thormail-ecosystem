@@ -137,3 +137,25 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# PHP
+vendor/
+composer.phar
+.php-cs-fixer.cache
+auth.json
+
+# Docker
+.docker/
+# Ignore Postgres local data if used as a local bind mount
+**/postgres_data/
+**/pg_data/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.history/
+
