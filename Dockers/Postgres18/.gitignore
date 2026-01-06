@@ -1,0 +1,14 @@
+# Environment files with credentials
+.env
+
+# Publish script (local workflow, not for repo)
+publish.sh
+
+# Editor and OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Docker build cache (optional local cleanup)
+.docker/

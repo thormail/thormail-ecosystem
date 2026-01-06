@@ -1,0 +1,38 @@
+# Environment files (contains secrets)
+.env
+.env.local
+.env.*.local
+
+# Publishing scripts
+publish.sh
+
+# Configuration (may contain tokens/secrets)
+.npmrc
+
+# npm
+node_modules/
+npm-debug.log*
+.npm
+package-lock.json
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Tests
+test/

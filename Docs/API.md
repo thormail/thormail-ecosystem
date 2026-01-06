@@ -101,7 +101,7 @@ POST /v1/send
 | `data` | object | No | Key-value pairs for template substitution or raw data payload |
 | `templateId` | string | No | ID of a stored template to use |
 | `scheduledAt` | string | No | ISO 8601 timestamp to schedule delivery (max 3 days in future) |
-| `provider` | string | No | Specific provider identifier to bypass rule engine |
+| `adapterId` | string | No | Specific adapter identifier to bypass the rule engine and route directly to the specified adapter |
 
 #### Adapter Pass-through & Template Data
 
@@ -203,7 +203,7 @@ POST /v1/send-batch
 | `body` | string | No | Shared content body |
 | `templateId` | string | No | Shared template ID |
 | `scheduledAt` | string | No | Shared ISO 8601 schedule time (max 30 days in future) |
-| `provider` | string | No | Shared provider identifier |
+| `adapterId` | string | No | Shared adapter identifier to bypass the rule engine for all messages in the batch |
 
 **Recipient Object**
 
