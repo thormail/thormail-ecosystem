@@ -1,17 +1,61 @@
-name: 🐛 Core Bug Report
+name: 🐛 Core / API Bug Report
 description: Report an issue with the main ThorMail orchestrator.
 title: "[Core Bug]: "
-labels: ["bug", "scope: core"]
+labels: ["bug", "scope: core", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        **Security Warning:** Do not post API Keys or passwords.
+        ### ⚠️ SECURITY WARNING: PUBLIC TRACKER ⚠️
+        
+        **This issue will be visible to the entire world.** Even though the Core code is private, **this report is PUBLIC**.
+        Please insure you **DO NOT** include:
+        - API Keys (AWS, SendGrid, etc.)
+        - Database Passwords
+        - Real Customer Email Addresses (PII)
+
+  - type: input
+    id: docker_version
+    attributes:
+      label: Docker Image Version
+      placeholder: e.g. thormail/backend:latest or v2.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Production
+        - Staging / Test
+        - Local Development
+    validations:
+      required: true
 
   - type: textarea
     id: description
     attributes:
       label: Problem Description
-      description: What happened?
+      description: What did you expect to happen vs. what actually happened?
     validations:
       required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Container Logs
+      description: ⚠️ CAUTION: Remove any secrets/keys from the output before pasting.
+      render: shell
+      placeholder: |
+        INFO: Server started...
+        (Please sanitize sensitive data)
+
+  - type: checkboxes
+    id: security_check
+    attributes:
+      label: Security Confirmation
+      description: You must acknowledge this to submit the report.
+      options:
+        - label: I confirm that I have scrubbed all sensitive information (API Keys, Passwords, PII) from the logs.
+          required: true
