@@ -1,4 +1,4 @@
-name: 🐛 Core / API Bug Report
+name: Core API Bug Report
 description: Report an issue with the main ThorMail orchestrator.
 title: "[Core Bug]: "
 labels: ["bug", "scope: core", "triage"]
@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### ⚠️ SECURITY WARNING: PUBLIC TRACKER ⚠️
+        ### SECURITY WARNING: PUBLIC TRACKER
         
         **This issue will be visible to the entire world.** Even though the Core code is private, **this report is PUBLIC**.
         Please insure you **DO NOT** include:
@@ -45,7 +45,7 @@ body:
     id: logs
     attributes:
       label: Container Logs
-      description: ⚠️ CAUTION: Remove any secrets/keys from the output before pasting.
+      description: CAUTION Remove any secrets/keys from the output before pasting.
       render: shell
       placeholder: |
         INFO: Server started...
