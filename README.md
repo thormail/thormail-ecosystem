@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://thormail.io/Banner.png">
     <source media="(prefers-color-scheme: light)" srcset="https://thormail.io/Banner.png">
-    <img alt="ThorMail Logo" src="https://thormail.io/Banner.png" width="400">
+    <img alt="ThorMail Logo" src="https://thormail.io/Banner.png" width="600">
   </picture>
 </p>
 
@@ -119,6 +119,8 @@ console.log('Queued with ID:', result.id);
 ## 📦 Available Packages
 
 ### Official Adapters
+
+> **Note:** "Official" means these adapters are developed and maintained by the ThorMail team. They are **not** affiliated with or endorsed by the service providers themselves (e.g., OneSignal, SendGrid, etc.).
 
 | Package | Description | NPM |
 |---------|-------------|-----|
