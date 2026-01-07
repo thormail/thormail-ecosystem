@@ -5,7 +5,7 @@ body:
     attributes:
       label: Target Adapter
       description: Which adapter needs upgrade? (e.g., @thormail/adapter-mailgun)
-      placeholder: @thormail/adapter-...
+      placeholder: thormail/adapter-...
     validations:
       required: true
 
