@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 Community Support & Questions
-    url: https://github.com/YOUR_ORG/thormail-ecosystem/discussions
+    url: https://github.com/thormail/thormail-ecosystem/discussions
     about: Please ask general questions or request help here.
   - name: 🔐 Report a Security Vulnerability
     url: mailto:security@thormail.com

@@ -20,7 +20,7 @@ body:
     attributes:
       label: Failing Adapter Package
       description: Please enter the exact package name (e.g., @thormail/adapter-ses).
-      placeholder: @thormail/adapter-name
+      placeholder: thormail/adapter-name
     validations:
       required: true
 
