@@ -1,0 +1,20 @@
+{
+    "name": "thormail-adapter-onesignal",
+    "version": "1.0.7",
+    "description": "OneSignal adapter for ThorMail",
+    "main": "./index.js",
+    "exports": "./index.js",
+    "type": "module",
+    "files": [
+        "index.js",
+        "README.md"
+    ],
+    "author": "ThorMail",
+    "license": "ISC",
+    "keywords": [
+        "thormail",
+        "thormail-adapter",
+        "email",
+        "onesignal"
+    ]
+}

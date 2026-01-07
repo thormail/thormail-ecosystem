@@ -159,3 +159,8 @@ Thumbs.db
 *.sublime-workspace
 .history/
 
+
+# Adapters Publishing
+Adapters/.env
+Adapters/.npmrc
+Adapters/publish.sh
