@@ -56,7 +56,6 @@ thormail-ecosystem/
 │   └── wordpress/          # Official WordPress plugin
 ├── Dockers/                # Docker images for the ecosystem
 │   └── Postgres18/         # PostgreSQL 18 with pg_partman
-└── .github/                # Issue templates & security policy
 ```
 
 ### What's Included
