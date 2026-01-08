@@ -1,0 +1,65 @@
+name: 🔌 Adapter Bug Report
+description: Create a report to help us improve a specific adapter (e.g., SES, SendGrid).
+title: "[Adapter Bug]: "
+labels: ["bug", "scope: adapter"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### ⚠️ SECURITY WARNING: PUBLIC REPOSITORY ⚠️
+
+        **This issue will be visible to the entire world.** Please ensure you **DO NOT** include real credentials in your code snippets or logs, such as:
+        - API Keys (AWS Access Key, SendGrid API Key, etc.)
+        - SMTP Passwords
+        - Private Tokens
+
+        *If you find a security vulnerability, do NOT post it here. Email security@thormail.com instead.*
+
+  - type: input
+    id: adapter
+    attributes:
+      label: Failing Adapter Package
+      description: Please enter the exact package name (e.g., @thormail/adapter-ses).
+      placeholder: thormail/adapter-name
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: NPM Package Version
+      placeholder: e.g. 1.0.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Code
+      description: Please provide a minimal code snippet. **⚠️ IMPORTANT Replace real API Keys with placeholders like `YOUR_API_KEY`.**
+      render: javascript
+      placeholder: |
+        // ✅ GOOD: Uses placeholder
+        const adapter = new SESAdapter({ apiKey: 'YOUR_API_KEY' });
+
+        // ❌ BAD: const adapter = new SESAdapter({ apiKey: 'SG.real_secret_key' });
+
+        await adapter.send({ ... });
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Stack Trace / Logs
+      description: ⚠️ CAUTION Remove any secrets/keys from the output before pasting.
+      render: shell
+
+  - type: checkboxes
+    id: security_check
+    attributes:
+      label: Security Confirmation
+      description: You must acknowledge this to submit the report.
+      options:
+        - label: I confirm that I have scrubbed all API Keys and sensitive credentials from the code snippets and logs provided above.
+          required: true

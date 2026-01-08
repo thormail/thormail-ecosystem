@@ -1,0 +1,28 @@
+title: "[Enhancement]: <Adapter Name> - <Feature>"
+body:
+  - type: input
+    id: adapter
+    attributes:
+      label: Target Adapter
+      description: Which adapter needs upgrade? (e.g., @thormail/adapter-mailgun)
+      placeholder: thormail/adapter-...
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What is missing?
+      description: Describe the functionality that the adapter currently lacks.
+      placeholder: The adapter currently sends plain text, but I need to use Mailgun Templates...
+    validations:
+      required: true
+
+  - type: input
+    id: doc_link
+    attributes:
+      label: API Documentation Link
+      description: Link to the provider's specific documentation for this feature.
+      placeholder: https://documentation.provider.com/en/latest/api-sending.html#sending
+    validations:
+      required: true

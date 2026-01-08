@@ -1,0 +1,27 @@
+title: "[Adapter Request]: <Provider Name>"
+body:
+  - type: input
+    id: provider_name
+    attributes:
+      label: Email Provider Name
+      placeholder: e.g. Mailgun, Postmark, SparkPost
+    validations:
+      required: true
+
+  - type: input
+    id: doc_link
+    attributes:
+      label: API Documentation URL
+      description: Link to the provider's sending API documentation.
+      placeholder: https://documentation.provider.com/en/latest/api-sending.html
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Urgency / Priority
+      options:
+        - Critical (Blocker for migration)
+        - Nice to have
+        - Low priority
