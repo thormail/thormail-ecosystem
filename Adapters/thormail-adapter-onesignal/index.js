@@ -281,8 +281,8 @@ export default class OneSignalAdapter {
         // We expect the structure defined in README: { "event": { ... }, "message": { ... } }
         // For robustness, we'll try to detect the structure.
 
-        const eventData = event.event || {};
-        const messageData = event.message || {};
+        const eventData = event || {};
+        const messageData = eventData.message || {};
 
         // 3. Map Event Type
         // OneSignal "kind" -> ThorMail "type"

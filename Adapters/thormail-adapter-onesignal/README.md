@@ -1,6 +1,6 @@
 # OneSignal Adapter for ThorMail
 
-This is an official adapter for [ThorMail](https://thormail.io), the professional self-hosted email orchestration server.
+Adapter for [ThorMail](https://thormail.io), the professional self-hosted email orchestration server.
 
 > [!IMPORTANT]
 > To use this adapter, you must have a running instance of **ThorMail** installed.
