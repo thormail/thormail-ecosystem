@@ -66,8 +66,8 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
-.env.*
+**/.env
+**/.env.*
 !.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -160,7 +160,10 @@ Thumbs.db
 .history/
 
 
-# Adapters Publishing
-Adapters/.env
-Adapters/.npmrc
-Adapters/publish.sh
+# Global Ignore for Scripts, Environment and Config Files
+*.sh
+**/.env
+**/.env.*
+**/.npmrc
+
+
