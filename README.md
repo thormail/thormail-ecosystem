@@ -125,6 +125,9 @@ console.log('Queued with ID:', result.id);
 | Package | Description | NPM |
 |---------|-------------|-----|
 | `thormail-adapter-onesignal` | OneSignal Push Notifications | [![npm](https://img.shields.io/npm/v/thormail-adapter-onesignal)](https://www.npmjs.com/package/thormail-adapter-onesignal) |
+| `thormail-adapter-resend` | Resend Email API | [![npm](https://img.shields.io/npm/v/thormail-adapter-resend)](https://www.npmjs.com/package/thormail-adapter-resend) |
+| `thormail-adapter-ses` | Amazon SES | [![npm](https://img.shields.io/npm/v/thormail-adapter-ses)](https://www.npmjs.com/package/thormail-adapter-ses) |
+| `thormail-adapter-smtp` | Custom SMTP Server | [![npm](https://img.shields.io/npm/v/thormail-adapter-smtp)](https://www.npmjs.com/package/thormail-adapter-smtp) |
 
 ### Official Clients
 
