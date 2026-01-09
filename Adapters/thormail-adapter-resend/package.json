@@ -1,0 +1,21 @@
+{
+    "name": "thormail-adapter-resend",
+    "version": "1.0.1",
+    "description": "Resend adapter for ThorMail",
+    "main": "./index.js",
+    "exports": "./index.js",
+    "type": "module",
+    "files": [
+        "index.js",
+        "README.md"
+    ],
+    "author": "ThorMail",
+    "license": "ISC",
+    "keywords": [
+        "thormail",
+        "thormail-adapter",
+        "email",
+        "resend"
+    ],
+    "dependencies": {}
+}
