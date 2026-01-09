@@ -15,8 +15,8 @@
 <p align="center">
   <a href="https://thormail.io">Website</a> •
   <a href="https://docs.thormail.io">Documentation</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#contributing">Contributing</a>
+  <a href="https://docs.thormail.io/getting-started/quick-start/">Getting Started</a> •
+  <a href="/CONTRIBUTING.md">Contributing</a>
 </p>
 
 <p align="center">
