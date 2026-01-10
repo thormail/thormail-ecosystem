@@ -82,9 +82,6 @@ export default class TelegramAdapter {
             if (subject) {
                 text += `<b>${subject}</b>\n\n`;
             }
-            if (subject) {
-                text += `<b>${subject}</b>\n\n`;
-            }
             text += this._sanitizeHtml(body);
 
 
