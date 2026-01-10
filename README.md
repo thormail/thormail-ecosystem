@@ -128,6 +128,7 @@ console.log('Queued with ID:', result.id);
 | `thormail-adapter-resend` | Resend Email API | [![npm](https://img.shields.io/npm/v/thormail-adapter-resend)](https://www.npmjs.com/package/thormail-adapter-resend) |
 | `thormail-adapter-ses` | Amazon SES | [![npm](https://img.shields.io/npm/v/thormail-adapter-ses)](https://www.npmjs.com/package/thormail-adapter-ses) |
 | `thormail-adapter-smtp` | Custom SMTP Server | [![npm](https://img.shields.io/npm/v/thormail-adapter-smtp)](https://www.npmjs.com/package/thormail-adapter-smtp) |
+| `thormail-adapter-telegram` | Telegram Bot API | [![npm](https://img.shields.io/npm/v/thormail-adapter-telegram)](https://www.npmjs.com/package/thormail-adapter-telegram) |
 
 ### Official Clients
 
