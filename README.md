@@ -122,13 +122,24 @@ console.log('Queued with ID:', result.id);
 
 > **Note:** "Official" means these adapters are developed and maintained by the ThorMail team. They are **not** affiliated with or endorsed by the service providers themselves (e.g., OneSignal, SendGrid, etc.).
 
-| Package | Description | NPM |
-|---------|-------------|-----|
-| `thormail-adapter-onesignal` | OneSignal Push Notifications | [![npm](https://img.shields.io/npm/v/thormail-adapter-onesignal)](https://www.npmjs.com/package/thormail-adapter-onesignal) |
-| `thormail-adapter-resend` | Resend Email API | [![npm](https://img.shields.io/npm/v/thormail-adapter-resend)](https://www.npmjs.com/package/thormail-adapter-resend) |
-| `thormail-adapter-ses` | Amazon SES | [![npm](https://img.shields.io/npm/v/thormail-adapter-ses)](https://www.npmjs.com/package/thormail-adapter-ses) |
-| `thormail-adapter-smtp` | Custom SMTP Server | [![npm](https://img.shields.io/npm/v/thormail-adapter-smtp)](https://www.npmjs.com/package/thormail-adapter-smtp) |
-| `thormail-adapter-telegram` | Telegram Bot API | [![npm](https://img.shields.io/npm/v/thormail-adapter-telegram)](https://www.npmjs.com/package/thormail-adapter-telegram) |
+| Package | Type | Description | NPM |
+|---------|------|-------------|-----|
+| `thormail-adapter-onesignal` | `EMAIL` | OneSignal Push Notifications | [![npm](https://img.shields.io/npm/v/thormail-adapter-onesignal)](https://www.npmjs.com/package/thormail-adapter-onesignal) |
+| `thormail-adapter-resend` | `EMAIL` | Resend Email API | [![npm](https://img.shields.io/npm/v/thormail-adapter-resend)](https://www.npmjs.com/package/thormail-adapter-resend) |
+| `thormail-adapter-ses` | `EMAIL` | Amazon SES | [![npm](https://img.shields.io/npm/v/thormail-adapter-ses)](https://www.npmjs.com/package/thormail-adapter-ses) |
+| `thormail-adapter-smtp` | `EMAIL` | Custom SMTP Server | [![npm](https://img.shields.io/npm/v/thormail-adapter-smtp)](https://www.npmjs.com/package/thormail-adapter-smtp) |
+| `thormail-adapter-telegram` | `TELEGRAM` | Telegram Bot API | [![npm](https://img.shields.io/npm/v/thormail-adapter-telegram)](https://www.npmjs.com/package/thormail-adapter-telegram) |
+
+#### About the `type` Field
+
+The **Type** column indicates how ThorMail routes messages to adapters. When you send a message with a specific `type` (e.g., `type: 'TELEGRAM'`), ThorMail routes it to all adapters matching that type.
+
+- **`EMAIL`** (default): Adapters without an explicit `type` handle standard email messages.
+- **Custom types** (`TELEGRAM`, `SMS`, `DISCORD`, etc.): Completely open-ended—you invent the type, and messages using it are routed to matching adapters.
+
+You can have **multiple adapters of the same type** installed simultaneously. ThorMail will distribute load among them based on priority and health status.
+
+📖 Learn more: [Creating Adapters - getMetadata()](https://docs.thormail.io/adapters/development/#static-getmetadata)
 
 ### Official Clients
 
