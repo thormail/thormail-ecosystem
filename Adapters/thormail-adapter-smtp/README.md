@@ -1,6 +1,6 @@
 # SMTP Adapter for ThorMail
 
-Adapter for [ThorMail](https://thormail.io), the professional self-hosted email orchestration server.
+Adapter for [ThorMail](https://thormail.io), the professional self-hosted delivery orchestration server.
 
 > [!IMPORTANT]
 > To use this adapter, you must have a running instance of **ThorMail** installed.
