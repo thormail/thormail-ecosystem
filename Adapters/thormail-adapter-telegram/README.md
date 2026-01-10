@@ -77,13 +77,42 @@ curl -X POST https://api.your-thormail-server.com/v1/send \
 > For advanced use cases, you can still use **Routing Rules** or specific `adapterId`s if strictly necessary, but `type` is the standard way to target this channel.
 
 * **to**: The Telegram **Chat ID**.
-* **body**: The message content (HTML is supported).
+* **body**: The message content (HTML is supported by default).
 * **subject**: Optional. If provided, it will be displayed in bold at the top of the message.
+
+## Data Parameters
+
+You can pass additional options in the `data` object to customize message behavior:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `_isMarkdown` | `boolean` | `false` | Use **MarkdownV2** formatting instead of HTML. |
+| `_disableWebPagePreview` | `boolean` | `false` | Disable link previews in the message. |
+
+### Example with data parameters
+
+```javascript
+const result = await client.send({
+  to: '123456789',
+  type: 'TELEGRAM',
+  subject: 'New Order',
+  body: '**Order #1234** has been _confirmed_.\n\nDetails: [View Order](https://example.com/orders/1234)',
+  data: {
+    _isMarkdown: true,
+    _disableWebPagePreview: true
+  }
+});
+```
+
+> [!NOTE]
+> **Auto-detection**: If you set `_isMarkdown: true` but the body contains HTML tags (like `<b>`, `<i>`, `<p>`), the adapter will automatically switch to HTML mode to prevent formatting errors.
 
 ## Features
 
 * **Instant Delivery**: Sends messages directly to Telegram chats or channels.
 * **HTML Support**: Supports basic HTML formatting (b, i, u, s, a, code, pre).
+* **MarkdownV2 Support**: Full MarkdownV2 support with automatic character escaping.
+* **Auto-detection**: Automatically detects HTML in Markdown mode and switches accordingly.
 * **Lightweight**: Uses native fetch, no heavy dependencies.
 
 ## License

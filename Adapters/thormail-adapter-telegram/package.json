@@ -1,6 +1,6 @@
 {
     "name": "thormail-adapter-telegram",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Telegram adapter for ThorMail",
     "main": "./index.js",
     "exports": "./index.js",
