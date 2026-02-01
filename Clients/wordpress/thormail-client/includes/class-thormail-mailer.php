@@ -12,6 +12,11 @@ class ThorMail_Mailer {
     private static $instance = null;
     private $last_error = '';
 
+    /**
+     * Get the singleton instance.
+     *
+     * @return ThorMail_Mailer The singleton instance.
+     */
     public static function get_instance() {
         if ( null === self::$instance ) {
             self::$instance = new self();
@@ -19,21 +24,34 @@ class ThorMail_Mailer {
         return self::$instance;
     }
 
+	/**
+	 * Initialize the mailer.
+	 *
+	 * Sets up the API client and hooks into wp_mail.
+	 */
 	public function __construct() {
 		$this->api = new ThorMail_API();
 		add_filter( 'pre_wp_mail', array( $this, 'send_email' ), 10, 2 );
 	}
 
+    /**
+     * Get the last error message from the API.
+     *
+     * @return string Error message.
+     */
     public function get_last_error() {
         return $this->last_error;
     }
 
 	/**
-	 * Pre-hook to hijack wp_mail.
+	 * Pre-hook to intercept wp_mail.
+	 *
+	 * Uses the `pre_wp_mail` filter to replace the default WordPress mailer
+	 * with ThorMail API sending.
 	 *
 	 * @param null|bool $return Short-circuit return value.
 	 * @param array     $atts   Attributes from wp_mail.
-	 * @return bool|null True if sent successfully, null to fallback (if needed, but we want to force it).
+	 * @return bool|null True if sent successfully, null to fallback.
 	 */
 	public function send_email( $return, $atts ) {
         $options = get_option( 'thormail_settings' );
@@ -134,6 +152,12 @@ class ThorMail_Mailer {
 		return true;
 	}
 
+	/**
+	 * Parse recipients string or array into a flat array.
+	 *
+	 * @param string|array $to Recipients.
+	 * @return array Array of email addresses.
+	 */
 	private function parse_recipients( $to ) {
 		if ( is_array( $to ) ) {
 			return $to;
@@ -141,6 +165,12 @@ class ThorMail_Mailer {
 		return array_map( 'trim', explode( ',', $to ) );
 	}
 
+	/**
+	 * Parse CC and BCC headers into recipients.
+	 *
+	 * @param array|string $headers Email headers.
+	 * @return array Array of additional recipients.
+	 */
 	private function parse_cc_bcc( $headers ) {
 		$recipients = array();
 		if ( empty( $headers ) ) {

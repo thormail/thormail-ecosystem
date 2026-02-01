@@ -3,7 +3,7 @@
  * Plugin Name:       ThorMail Client
  * Plugin URI:        https://github.com/thormail/thormail-ecosystem
  * Description:       Official WordPress client for self-hosted ThorMail servers. Connect to your private email infrastructure via API.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 5.7
  * Tested up to:      6.9
  * Requires PHP:      7.4
@@ -11,7 +11,7 @@
  * Author URI:        https://thormail.io
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       thormail
+ * Text Domain:       thormail-client
  * Domain Path:       /languages
  */
 
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'THORMAIL_VERSION', '1.0.2' );
+define( 'THORMAIL_VERSION', '1.0.3' );
 define( 'THORMAIL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'THORMAIL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -29,7 +29,11 @@ require_once THORMAIL_PLUGIN_DIR . 'includes/class-thormail-admin.php';
 require_once THORMAIL_PLUGIN_DIR . 'includes/class-thormail-mailer.php';
 
 /**
- * Initialize the plugin
+ * Initialize the plugin functionality.
+ *
+ * Sets up the admin interface and the mailer instance if configured.
+ *
+ * @return void
  */
 function thormail_init() {
 	// Initialize Admin
@@ -47,10 +51,13 @@ function thormail_init() {
 add_action( 'plugins_loaded', 'thormail_init' );
 
 /**
- * Add settings link to plugin list
+ * Add settings link to the plugin action links.
+ *
+ * @param array $links Existing plugin action links.
+ * @return array Modified plugin action links.
  */
 function thormail_add_settings_link( $links ) {
-	$settings_link = '<a href="options-general.php?page=thormail">' . esc_html__( 'Settings', 'thormail' ) . '</a>';
+	$settings_link = '<a href="options-general.php?page=thormail-client">' . esc_html__( 'Settings', 'thormail-client' ) . '</a>';
 	array_unshift( $links, $settings_link );
 	return $links;
 }

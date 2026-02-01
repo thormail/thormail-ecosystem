@@ -13,6 +13,11 @@ class ThorMail_API {
 	private $base_url;
 	private $timeout = 30;
 
+	/**
+	 * Initialize the API client.
+	 *
+	 * Loads configuration from plugin settings.
+	 */
 	public function __construct() {
 		$options = get_option( 'thormail_settings' );
 		$this->api_key      = isset( $options['api_key'] ) ? $options['api_key'] : '';
@@ -42,31 +47,26 @@ class ThorMail_API {
 	/**
 	 * Test the connection to the API.
 	 *
-	 * @return boolean|WP_Error True if valid, WP_Error if not.
+	 * Verifies that the necessary configuration parameters are present.
+	 *
+	 * @return boolean|WP_Error True if configuration is valid, WP_Error if missing credentials.
 	 */
 	public function verify_connection() {
-		// We can try to send a dummy request or check a theoretical health endpoint.
-        // If we don't have a specific ping endpoint, we might just assume valid if settings are present
-        // or try to list something if permission allows. 
-        // For now, we'll assume if we can hit the endpoint and get a auth error (if invalid) or 404 (if valid but wrong path) implies connectivity.
-        // Actually, let's use a known safe operation if available, or just skip hard verification for "lightweight" unless requested.
-        // The user asked to "verify the latest version", maybe check if API is reachable?
-        
-        // Since we don't have a specific `GET /v1/me` documented in the JS client, we will rely on sending handling errors.
-        // However, we can basic check if variables are set.
 		if ( empty( $this->api_key ) || empty( $this->workspace_id ) ) {
-			return new WP_Error( 'missing_config', __( 'API Key and Workspace ID are required.', 'thormail' ) );
+			return new WP_Error( 'missing_config', __( 'API Key and Workspace ID are required.', 'thormail-client' ) );
 		}
-        return true;
+		return true;
 	}
 
 	/**
 	 * Internal request handler with retry logic.
 	 *
-	 * @param string $endpoint
-	 * @param array  $body
-	 * @param string $method
-	 * @return array|WP_Error
+	 * Application-layer wrapper for wp_remote_request to handle authentication and retries.
+	 *
+	 * @param string $endpoint The API endpoint path.
+	 * @param array  $body     Request body data.
+	 * @param string $method   HTTP method (default: POST).
+	 * @return array|WP_Error  Decoded JSON response or WP_Error.
 	 */
 	private function request( $endpoint, $body, $method = 'POST' ) {
 		$url = $this->base_url . $endpoint;
@@ -130,6 +130,6 @@ class ThorMail_API {
 			$attempt++;
 		}
 
-		return new WP_Error( 'timeout', __( 'Request timed out after retries.', 'thormail' ) );
+		return new WP_Error( 'timeout', __( 'Request timed out after retries.', 'thormail-client' ) );
 	}
 }

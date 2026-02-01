@@ -10,6 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ThorMail_Admin {
 	private $option_name = 'thormail_settings';
 
+	/**
+	 * Initialize the admin class.
+	 *
+	 * Registers hooks for the admin area.
+	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -18,95 +23,117 @@ class ThorMail_Admin {
         add_action( 'update_option_' . $this->option_name, array( $this, 'clear_health_cache' ) );
 	}
 
+    /**
+     * Clear the health check transient.
+     *
+     * Triggered when settings are saved.
+     */
     public function clear_health_cache() {
         delete_transient( 'thormail_health_check' );
     }
 
 
+	/**
+	 * Enqueue admin styles.
+	 *
+	 * @param string $hook The current admin page hook.
+	 */
 	public function enqueue_scripts( $hook ) {
-		if ( 'settings_page_thormail' !== $hook ) {
+		if ( 'settings_page_thormail-client' !== $hook ) {
 			return;
 		}
 		wp_enqueue_style( 'thormail-admin-css', THORMAIL_PLUGIN_URL . 'assets/css/admin.css', array(), THORMAIL_VERSION );
 	}
 
+	/**
+	 * Add the settings page to the admin menu.
+	 */
 	public function add_menu_page() {
 		add_options_page(
 			'ThorMail Settings',
 			'ThorMail',
 			'manage_options',
-			'thormail',
+			'thormail-client',
 			array( $this, 'render_page' )
 		);
 	}
 
+	/**
+	 * Register settings and fields.
+	 */
 	public function register_settings() {
 		register_setting( $this->option_name, $this->option_name, array( $this, 'sanitize_settings' ) );
 
 		add_settings_section(
 			'thormail_main_section',
-			__( 'Configuration', 'thormail' ),
+			__( 'Configuration', 'thormail-client' ),
 			null,
-			'thormail'
+			'thormail-client'
 		);
 
         add_settings_field(
             'thormail_enabled',
-            __( 'Enable ThorMail', 'thormail' ),
+            __( 'Enable ThorMail', 'thormail-client' ),
             array( $this, 'field_enabled' ),
-            'thormail',
+            'thormail-client',
             'thormail_main_section'
         );
 
 		add_settings_field(
 			'base_url',
-			__( 'API Base URL', 'thormail' ),
+			__( 'API Base URL', 'thormail-client' ),
 			array( $this, 'field_base_url' ),
-			'thormail',
+			'thormail-client',
 			'thormail_main_section'
 		);
 
 		add_settings_field(
 			'workspace_id',
-			__( 'Workspace ID', 'thormail' ),
+			__( 'Workspace ID', 'thormail-client' ),
 			array( $this, 'field_workspace_id' ),
-			'thormail',
+			'thormail-client',
 			'thormail_main_section'
 		);
 
 		add_settings_field(
 			'api_key',
-			__( 'API Key', 'thormail' ),
+			__( 'API Key', 'thormail-client' ),
 			array( $this, 'field_api_key' ),
-			'thormail',
+			'thormail-client',
 			'thormail_main_section'
 		);
 
         add_settings_field(
             'adapter_id',
-            __( 'Adapter ID (Optional)', 'thormail' ),
+            __( 'Adapter ID (Optional)', 'thormail-client' ),
             array( $this, 'field_adapter_id' ),
-            'thormail',
+            'thormail-client',
             'thormail_main_section'
         );
 
         add_settings_field(
             'template_id',
-            __( 'Template ID (Optional)', 'thormail' ),
+            __( 'Template ID (Optional)', 'thormail-client' ),
             array( $this, 'field_template_id' ),
-            'thormail',
+            'thormail-client',
             'thormail_main_section'
         );
 
         add_settings_field(
             'body_key',
-            __( 'Body Data Key (Optional)', 'thormail' ),
+            __( 'Body Data Key (Optional)', 'thormail-client' ),
             array( $this, 'field_body_key' ),
-            'thormail',
+            'thormail-client',
             'thormail_main_section'
         );
 	}
 
+	/**
+	 * Sanitize setting inputs.
+	 *
+	 * @param array $input The raw input array.
+	 * @return array Sanitized input array.
+	 */
 	public function sanitize_settings( $input ) {
 		$new_input = array();
         $new_input['thormail_enabled'] = isset( $input['thormail_enabled'] ) ? '1' : '0';
@@ -131,6 +158,9 @@ class ThorMail_Admin {
 		return $new_input;
 	}
 
+    /**
+     * Render the enabled toggle field.
+     */
     public function field_enabled() {
         $options = get_option( $this->option_name );
         $val     = isset( $options['thormail_enabled'] ) ? $options['thormail_enabled'] : '0';
@@ -139,50 +169,71 @@ class ThorMail_Admin {
             <input type="checkbox" name="<?php echo esc_attr( $this->option_name ); ?>[thormail_enabled]" value="1" <?php checked( $val, '1' ); ?>>
             <span class="slider round"></span>
         </label>
-        <p class="description"><?php esc_html_e( 'Route all emails through ThorMail.', 'thormail' ); ?></p>
+        <p class="description"><?php esc_html_e( 'Route all emails through ThorMail.', 'thormail-client' ); ?></p>
         <?php
     }
 
+	/**
+	 * Render the base URL field.
+	 */
 	public function field_base_url() {
 		$options = get_option( $this->option_name );
 		$val     = isset( $options['base_url'] ) ? $options['base_url'] : '';
 		echo "<input type='url' name='" . esc_attr( $this->option_name ) . "[base_url]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input' pPlaceholder='https://api.thormail.io'>";
-		echo "<p class='description'>" . esc_html__( 'The base URL of the ThorMail API server.', 'thormail' ) . "</p>";
+		echo "<p class='description'>" . esc_html__( 'The base URL of the ThorMail API server.', 'thormail-client' ) . "</p>";
 	}
 
+	/**
+	 * Render the Workspace ID field.
+	 */
 	public function field_workspace_id() {
 		$options = get_option( $this->option_name );
 		$val     = isset( $options['workspace_id'] ) ? $options['workspace_id'] : '';
 		echo "<input type='text' name='" . esc_attr( $this->option_name ) . "[workspace_id]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
 	}
 
+	/**
+	 * Render the API Key field.
+	 */
 	public function field_api_key() {
 		$options = get_option( $this->option_name );
 		$val     = isset( $options['api_key'] ) ? $options['api_key'] : '';
 		echo "<input type='password' name='" . esc_attr( $this->option_name ) . "[api_key]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
 	}
 
+    /**
+     * Render the Adapter ID field.
+     */
     public function field_adapter_id() {
         $options = get_option( $this->option_name );
         $val     = isset( $options['adapter_id'] ) ? $options['adapter_id'] : '';
         echo "<input type='text' name='" . esc_attr( $this->option_name ) . "[adapter_id]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
-        echo "<p class='description'>" . esc_html__( 'Optional. Force all emails to use a specific Adapter ID.', 'thormail' ) . "</p>";
+        echo "<p class='description'>" . esc_html__( 'Optional. Force all emails to use a specific Adapter ID.', 'thormail-client' ) . "</p>";
     }
 
+    /**
+     * Render the Template ID field.
+     */
     public function field_template_id() {
         $options = get_option( $this->option_name );
         $val     = isset( $options['template_id'] ) ? $options['template_id'] : '';
         echo "<input type='text' name='" . esc_attr( $this->option_name ) . "[template_id]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
-        echo "<p class='description'>" . esc_html__( 'Optional. Use a specific Template ID for emails.', 'thormail' ) . "</p>";
+        echo "<p class='description'>" . esc_html__( 'Optional. Use a specific Template ID for emails.', 'thormail-client' ) . "</p>";
     }
 
+    /**
+     * Render the Body Key field.
+     */
     public function field_body_key() {
         $options = get_option( $this->option_name );
         $val     = isset( $options['body_key'] ) ? $options['body_key'] : '';
         echo "<input type='text' name='" . esc_attr( $this->option_name ) . "[body_key]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
-        echo "<p class='description'>" . wp_kses_post( __( 'Optional. If set, puts the email body into <code>data[key]</code> instead of <code>body</code>. Useful for templates.', 'thormail' ) ) . "</p>";
+        echo "<p class='description'>" . wp_kses_post( __( 'Optional. If set, puts the email body into <code>data[key]</code> instead of <code>body</code>. Useful for templates.', 'thormail-client' ) ) . "</p>";
     }
 
+	/**
+	 * Render the settings page.
+	 */
 	public function render_page() {
 		$options = get_option( $this->option_name );
 		// Check if enabled + configured
@@ -192,13 +243,13 @@ class ThorMail_Admin {
        if ( isset( $_GET['test_email'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
            $status = sanitize_text_field( wp_unslash( $_GET['test_email'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
            if ( 'success' === $status ) {
-               echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Test email sent successfully!', 'thormail' ) . '</p></div>';
+               echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Test email sent successfully!', 'thormail-client' ) . '</p></div>';
            } else {
-               $error_msg = __( 'Failed to send test email. Check your settings or error logs.', 'thormail' );
+               $error_msg = __( 'Failed to send test email. Check your settings or error logs.', 'thormail-client' );
                if ( isset( $_GET['error_message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                    $decoded = base64_decode( sanitize_text_field( wp_unslash( $_GET['error_message'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                    if ( $decoded ) {
-                       $error_msg .= ' <br/><strong>' . __( 'Error:', 'thormail' ) . '</strong> ' . esc_html( $decoded );
+                       $error_msg .= ' <br/><strong>' . __( 'Error:', 'thormail-client' ) . '</strong> ' . esc_html( $decoded );
                    }
                }
                echo '<div class="notice notice-error is-dismissible"><p>' . wp_kses_post( $error_msg ) . '</p></div>';
@@ -214,11 +265,11 @@ class ThorMail_Admin {
                     <div class="thormail-status <?php echo ( $is_configured && $is_enabled ) ? 'active' : 'inactive'; ?>">
 						<?php 
                         if ( ! $is_configured ) {
-                            esc_html_e( 'Missing Configuration', 'thormail' );
+                            esc_html_e( 'Missing Configuration', 'thormail-client' );
                         } elseif ( ! $is_enabled ) {
-                            esc_html_e( 'Disabled', 'thormail' );
+                            esc_html_e( 'Disabled', 'thormail-client' );
                         } else {
-                            esc_html_e( 'Active', 'thormail' );
+                            esc_html_e( 'Active', 'thormail-client' );
                         }
                         ?>
                     </div>
@@ -229,34 +280,34 @@ class ThorMail_Admin {
                 <div class="thormail-main">
                     <form action="options.php" method="post" class="thormail-card">
                         <div class="thormail-card-header">
-                            <h2><?php esc_html_e( 'Settings', 'thormail' ); ?></h2>
-                            <p><?php esc_html_e( 'Configure your ThorMail connection details below.', 'thormail' ); ?></p>
+                            <h2><?php esc_html_e( 'Settings', 'thormail-client' ); ?></h2>
+                            <p><?php esc_html_e( 'Configure your ThorMail connection details below.', 'thormail-client' ); ?></p>
                         </div>
 						<?php
 						settings_fields( $this->option_name );
-						do_settings_sections( 'thormail' );
-						submit_button( __( 'Save Changes', 'thormail' ) );
+						do_settings_sections( 'thormail-client' );
+						submit_button( __( 'Save Changes', 'thormail-client' ) );
 						?>
                     </form>
 
 					<?php if ( $is_configured ) : ?>
                         <div class="thormail-card thormail-test-email">
                             <div class="thormail-card-header">
-                                <h3><?php esc_html_e( 'Send Test Email', 'thormail' ); ?></h3>
-                                <p><?php esc_html_e( 'Send a test email to verify your configuration.', 'thormail' ); ?></p>
+                                <h3><?php esc_html_e( 'Send Test Email', 'thormail-client' ); ?></h3>
+                                <p><?php esc_html_e( 'Send a test email to verify your configuration.', 'thormail-client' ); ?></p>
                             </div>
                             <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
                                 <input type="hidden" name="action" value="thormail_send_test">
 								<?php wp_nonce_field( 'thormail_test_email' ); ?>
                                 <div class="thormail-form-row">
-                                    <label for="thormail_to"><?php esc_html_e( 'To:', 'thormail' ); ?></label>
+                                    <label for="thormail_to"><?php esc_html_e( 'To:', 'thormail-client' ); ?></label>
                                     <input type="email" name="thormail_to" id="thormail_to" value="<?php echo esc_attr( wp_get_current_user()->user_email ); ?>" class="regular-text" style="width: 100%;">
                                 </div>
                                 <div class="thormail-form-row">
-                                    <label for="thormail_body"><?php esc_html_e( 'Body (HTML):', 'thormail' ); ?></label>
+                                    <label for="thormail_body"><?php esc_html_e( 'Body (HTML):', 'thormail-client' ); ?></label>
                                     <textarea name="thormail_body" id="thormail_body" rows="6" class="large-text code"><h1>Test Email</h1><p>This is a <strong>test</strong> email from ThorMail.</p></textarea>
                                 </div>
-								<?php submit_button( __( 'Send Test', 'thormail' ), 'secondary' ); ?>
+								<?php submit_button( __( 'Send Test', 'thormail-client' ), 'secondary' ); ?>
                             </form>
                         </div>
 					<?php endif; ?>
@@ -284,10 +335,10 @@ class ThorMail_Admin {
                         ?>
                         
                         <div class="thormail-card thormail-info-card thormail-status-card">
-                            <h3><?php esc_html_e( 'ThorMail Service Status', 'thormail' ); ?></h3>
+                            <h3><?php esc_html_e( 'ThorMail Service Status', 'thormail-client' ); ?></h3>
                             <?php if ( $is_healthy ) : ?>
                                 <div class="thormail-system-status safe">
-                                    <span class="dashicons dashicons-yes-alt"></span> <strong><?php esc_html_e( 'All Systems Operational', 'thormail' ); ?></strong>
+                                    <span class="dashicons dashicons-yes-alt"></span> <strong><?php esc_html_e( 'All Systems Operational', 'thormail-client' ); ?></strong>
                                 </div>
                                 <ul class="thormail-service-list">
                                     <?php if ( isset( $health_status['services'] ) ) : ?>
@@ -304,40 +355,40 @@ class ThorMail_Admin {
                                 </div>
                             <?php else : ?>
                                  <div class="thormail-system-status error">
-                                    <span class="dashicons dashicons-warning"></span> <strong><?php esc_html_e( 'System Unreachable', 'thormail' ); ?></strong>
+                                    <span class="dashicons dashicons-warning"></span> <strong><?php esc_html_e( 'System Unreachable', 'thormail-client' ); ?></strong>
                                 </div>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
 
                     <div class="thormail-card thormail-info-card">
-                        <h3><?php esc_html_e( 'About ThorMail', 'thormail' ); ?></h3>
-                        <p><?php esc_html_e( 'ThorMail is a powerful email delivery service designed for developers and businesses.', 'thormail' ); ?></p>
+                        <h3><?php esc_html_e( 'About ThorMail', 'thormail-client' ); ?></h3>
+                        <p><?php esc_html_e( 'ThorMail is a powerful email delivery service designed for developers and businesses.', 'thormail-client' ); ?></p>
                         
-                        <h4><?php esc_html_e( 'Why ThorMail?', 'thormail' ); ?></h4>
+                        <h4><?php esc_html_e( 'Why ThorMail?', 'thormail-client' ); ?></h4>
                         <ul class="thormail-feature-list">
-                            <li><span class="dashicons dashicons-randomize"></span> <?php esc_html_e( 'Automatic Failovers', 'thormail' ); ?></li>
-                            <li><span class="dashicons dashicons-unlock"></span> <?php esc_html_e( 'No Vendor Lock-in', 'thormail' ); ?></li>
-                            <li><span class="dashicons dashicons-performance"></span> <?php esc_html_e( 'Infinite Scalability', 'thormail' ); ?></li>
-                            <li><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e( 'Detailed Analytics', 'thormail' ); ?></li>
+                            <li><span class="dashicons dashicons-randomize"></span> <?php esc_html_e( 'Automatic Failovers', 'thormail-client' ); ?></li>
+                            <li><span class="dashicons dashicons-unlock"></span> <?php esc_html_e( 'No Vendor Lock-in', 'thormail-client' ); ?></li>
+                            <li><span class="dashicons dashicons-performance"></span> <?php esc_html_e( 'Infinite Scalability', 'thormail-client' ); ?></li>
+                            <li><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e( 'Detailed Analytics', 'thormail-client' ); ?></li>
                         </ul>
 
                         <div class="thormail-actions">
                             <a href="https://thormail.io" target="_blank" class="button button-primary thormail-btn-block">
-                                <?php esc_html_e( 'Visit Official Website', 'thormail' ); ?> <span class="dashicons dashicons-external"></span>
+                                <?php esc_html_e( 'Visit Official Website', 'thormail-client' ); ?> <span class="dashicons dashicons-external"></span>
                             </a>
                             <a href="https://docs.thormail.io" target="_blank" class="button thormail-btn-block">
-                                <?php esc_html_e( 'Read Documentation', 'thormail' ); ?> <span class="dashicons dashicons-book"></span>
+                                <?php esc_html_e( 'Read Documentation', 'thormail-client' ); ?> <span class="dashicons dashicons-book"></span>
                             </a>
                             <a href="https://github.com/thormail/thormail-ecosystem/" target="_blank" class="button thormail-btn-block">
-                                <?php esc_html_e( 'Get Support', 'thormail' ); ?> <span class="dashicons dashicons-sos"></span>
+                                <?php esc_html_e( 'Get Support', 'thormail-client' ); ?> <span class="dashicons dashicons-sos"></span>
                             </a>
                         </div>
                     </div>
                     
                     <div class="thormail-card thormail-info-card thormail-version-card">
-                        <h3><?php esc_html_e( 'Need Help?', 'thormail' ); ?></h3>
-                        <p><?php esc_html_e( 'Check out our comprehensive guides to get the most out of ThorMail.', 'thormail' ); ?></p>
+                        <h3><?php esc_html_e( 'Need Help?', 'thormail-client' ); ?></h3>
+                        <p><?php esc_html_e( 'Check out our comprehensive guides to get the most out of ThorMail.', 'thormail-client' ); ?></p>
                          <p class="thormail-footer-link">Running Version <?php echo esc_html( THORMAIL_VERSION ); ?></p>
                     </div>
                 </div>
@@ -346,6 +397,11 @@ class ThorMail_Admin {
 		<?php
 	}
 
+	/**
+	 * Handle sending a test email.
+	 *
+	 * Triggered via admin_post hook.
+	 */
 	public function handle_test_email() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( 'Unauthorized' );
@@ -371,7 +427,7 @@ class ThorMail_Admin {
 		$sent = wp_mail( $to, $subject, $message, $headers );
 
 		// Redirect back
-		$query_args = array( 'page' => 'thormail' );
+		$query_args = array( 'page' => 'thormail-client' );
 		if ( $sent ) {
 			$query_args['test_email'] = 'success';
 		} else {
