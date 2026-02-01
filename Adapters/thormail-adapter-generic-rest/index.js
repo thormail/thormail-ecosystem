@@ -90,7 +90,8 @@ export default class GenericRestAdapter {
         return {
             name: 'Generic REST API',
             description: 'Send messages via any generic REST API with custom payloads and headers.',
-            group: 'generic'
+            group: 'generic',
+            type: 'REST'
         };
     }
 
