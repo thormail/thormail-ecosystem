@@ -9,8 +9,8 @@
  * Requires PHP:      7.4
  * Author:            ThorMail Team
  * Author URI:        https://thormail.io
- * License:           MIT
- * License URI:       https://opensource.org/licenses/MIT
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       thormail
  * Domain Path:       /languages
  */

@@ -5,25 +5,27 @@ Requires at least: 5.7
 Tested up to: 6.9
 Stable tag: 1.0.0
 Requires PHP: 7.4
-License: MIT
-License URI: https://opensource.org/licenses/MIT
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Official WordPress client for ThorMail (Self-Hosted). Connect your WordPress site to your own email infrastructure.
+The Ultimate Delivery Platform. Official WordPress client for ThorMail (Self-Hosted). Connect your WordPress site to your own email infrastructure.
 
 == Description ==
 
 **IMPORTANT:** This plugin is a **client** implementation. To use it, you must have a running instance of **ThorMail** installed on your own server.
 
-ThorMail is a self-hosted, high-performance email delivery API (similar to SendGrid or Mailgun, but on your own infrastructure). This plugin connects your WordPress site to your private ThorMail server, allowing you to bypass default wp_mail() limitations and ensure reliable delivery.
+ThorMail is the Ultimate Delivery Platform. A high-performance, intelligent delivery infrastructure designed for scale, speed, and absolute reliability. This plugin seamlessly connects your WordPress site to your private ThorMail server, allowing you to bypass default wp_mail() limitations and wield sending power previously reserved for enterprise giants.
 
-For more information on how to deploy your own ThorMail server, please visit [thormail.io](https://thormail.io).
+For installation instructions and documentation, please visit [docs.thormail.io](https://docs.thormail.io).
+To learn more about the project, visit [thormail.io](https://thormail.io).
 
-**Features:**
+**Why ThorMail?**
 
-*   **Self-Hosted Power:** Complete control over your email data and infrastructure.
-*   **Performance:** Offload email processing to your ThorMail instance.
-*   **Resilient:** Built-in retry logic to handle network interruptions.
-*   **Simple Integration:** Route all WP emails through your API just by configuring your endpoint.
+*   **Lightning Speed:** Engineered for zero latency. Process millions of messages with unparalleled efficiency using asynchronous background processing.
+*   **Unbreakable Uptime:** Built with automatic failover. If one provider fails (e.g., SES), ThorMail instantly switches to your backup (e.g., SMTP or SendGrid).
+*   **Radical Provider Freedom:** Break the chains of Vendor Lock-in. Switch providers with a single click without changing a line of code in WordPress.
+*   **Sovereign Security:** Your data, your infrastructure. Keep your email logs and templates on your own servers. GDPR compliant by design.
+*   **Intelligent Routing:** Define priority rules to route transactional emails via high-deliverability paths and marketing emails via bulk providers.
 
 == Installation ==
 
