@@ -1,5 +1,5 @@
 === ThorMail Client ===
-Contributors: thormail
+Contributors: jodacame
 Tags: email, transactional, thormail, api, smtp, self-hosted
 Requires at least: 5.7
 Tested up to: 6.9
