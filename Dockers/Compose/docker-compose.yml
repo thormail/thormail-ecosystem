@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: thormail/postgres-thormail:latest
+    pull_policy: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - thormail_postgres_data:/var/lib/postgresql/data
+    networks:
+      - thormail_network
+    restart: unless-stopped
+
+  redis:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    networks:
+      - thormail_network
+    restart: unless-stopped
+
+  backend:
+    image: thormail/thormail-backend:latest
+    pull_policy: always
+    environment:
+      PORT: 4000
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      EMAIL: ${EMAIL}
+    ports:
+      - "4000:4000"
+    volumes:
+      - thormail_backend_extensions:/app/extensions
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - thormail_network
+
+  frontend:
+    image: thormail/thormail-frontend:latest
+    pull_policy: always
+    environment:
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - thormail_network
+
+  worker:
+    image: thormail/thormail-worker:latest
+    pull_policy: always
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      WORKER_ID: ${WORKER_ID}
+      WORKER_NAME: ${WORKER_NAME}
+    volumes:
+      - thormail_worker_extensions:/app/extensions
+    depends_on:
+      - postgres
+    networks:
+      - thormail_network
+
+networks:
+  thormail_network:
+    driver: bridge
+
+volumes:
+  thormail_postgres_data:
+  thormail_backend_extensions:
+  thormail_worker_extensions:

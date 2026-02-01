@@ -7,7 +7,7 @@ FROM postgres:18-alpine
 LABEL maintainer="ThorMail Team" \
     org.opencontainers.image.title="postgres-thormail" \
     org.opencontainers.image.description="PostgreSQL 18 with pg_partman extension for ThorMail Ecosystem" \
-    org.opencontainers.image.version="1.0.2" \
+    org.opencontainers.image.version="1.0.3" \
     org.opencontainers.image.source="https://github.com/thormail/thormail-ecosystem" \
     org.opencontainers.image.licenses="PostgreSQL"
 

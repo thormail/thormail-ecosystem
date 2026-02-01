@@ -161,9 +161,9 @@ Thumbs.db
 
 
 # Global Ignore for Scripts, Environment and Config Files
-*.sh
+local-publish.sh
+publish.sh
 **/.env
 **/.env.*
 **/.npmrc
-.agent/
 
