@@ -84,6 +84,22 @@ class ThorMail_Admin {
             'thormail',
             'thormail_main_section'
         );
+
+        add_settings_field(
+            'template_id',
+            __( 'Template ID (Optional)', 'thormail' ),
+            array( $this, 'field_template_id' ),
+            'thormail',
+            'thormail_main_section'
+        );
+
+        add_settings_field(
+            'body_key',
+            __( 'Body Data Key (Optional)', 'thormail' ),
+            array( $this, 'field_body_key' ),
+            'thormail',
+            'thormail_main_section'
+        );
 	}
 
 	public function sanitize_settings( $input ) {
@@ -100,6 +116,12 @@ class ThorMail_Admin {
 		}
         if ( isset( $input['adapter_id'] ) ) {
             $new_input['adapter_id'] = sanitize_text_field( $input['adapter_id'] );
+        }
+        if ( isset( $input['template_id'] ) ) {
+            $new_input['template_id'] = sanitize_text_field( $input['template_id'] );
+        }
+        if ( isset( $input['body_key'] ) ) {
+            $new_input['body_key'] = sanitize_text_field( $input['body_key'] );
         }
 		return $new_input;
 	}
@@ -142,6 +164,20 @@ class ThorMail_Admin {
         echo "<p class='description'>" . __( 'Optional. Force all emails to use a specific Adapter ID.', 'thormail' ) . "</p>";
     }
 
+    public function field_template_id() {
+        $options = get_option( $this->option_name );
+        $val     = isset( $options['template_id'] ) ? $options['template_id'] : '';
+        echo "<input type='text' name='{$this->option_name}[template_id]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
+        echo "<p class='description'>" . __( 'Optional. Use a specific Template ID for emails.', 'thormail' ) . "</p>";
+    }
+
+    public function field_body_key() {
+        $options = get_option( $this->option_name );
+        $val     = isset( $options['body_key'] ) ? $options['body_key'] : '';
+        echo "<input type='text' name='{$this->option_name}[body_key]' value='" . esc_attr( $val ) . "' class='regular-text thormail-input'>";
+        echo "<p class='description'>" . __( 'Optional. If set, puts the email body into <code>data[key]</code> instead of <code>body</code>. Useful for templates.', 'thormail' ) . "</p>";
+    }
+
 	public function render_page() {
 		$options = get_option( $this->option_name );
         // Check if enabled + configured
@@ -153,7 +189,14 @@ class ThorMail_Admin {
             if ( 'success' === $status ) {
                 echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Test email sent successfully!', 'thormail' ) . '</p></div>';
             } else {
-                 echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Failed to send test email. Check your settings or error logs.', 'thormail' ) . '</p></div>';
+                $error_msg = __( 'Failed to send test email. Check your settings or error logs.', 'thormail' );
+                if ( isset( $_GET['error_message'] ) ) {
+                    $decoded = base64_decode( $_GET['error_message'] );
+                    if ( $decoded ) {
+                        $error_msg .= ' <br/><strong>' . __( 'Error:', 'thormail' ) . '</strong> ' . esc_html( $decoded );
+                    }
+                }
+                echo '<div class="notice notice-error is-dismissible"><p>' . $error_msg . '</p></div>';
             }
         }
 		?>
@@ -197,6 +240,12 @@ class ThorMail_Admin {
                                     <input type="email" name="thormail_to" id="thormail_to" value="<?php echo esc_attr( wp_get_current_user()->user_email ); ?>" class="regular-text">
                                 </td>
                             </tr>
+                            <tr>
+                                <th scope="row"><label for="thormail_body"><?php _e( 'Body (HTML):', 'thormail' ); ?></label></th>
+                                <td>
+                                    <textarea name="thormail_body" id="thormail_body" rows="6" class="large-text code"><h1>Test Email</h1><p>This is a <strong>test</strong> email from ThorMail.</p></textarea>
+                                </td>
+                            </tr>
                         </table>
 						<?php submit_button( __( 'Send Test', 'thormail' ), 'secondary' ); ?>
                     </form>
@@ -219,14 +268,32 @@ class ThorMail_Admin {
 		}
 
 		$subject = 'ThorMail Test Email';
-		$message = "Congratulations! \n\nThis is a test email from ThorMail WordPress Plugin.\n\nTime: " . current_time( 'mysql' );
-		$headers = array( 'Content-Type: text/plain' );
+        $body_content = isset( $_POST['thormail_body'] ) ? wp_kses_post( $_POST['thormail_body'] ) : '';
+        if ( empty( $body_content ) ) {
+		    $message = "Congratulations! \n\nThis is a test email from ThorMail WordPress Plugin.\n\nTime: " . current_time( 'mysql' );
+            $headers = array( 'Content-Type: text/plain' );
+        } else {
+            $message = $body_content;
+            $headers = array( 'Content-Type: text/html' );
+        }
 
 		$sent = wp_mail( $to, $subject, $message, $headers );
 
-        // Redirect back
-        $status = $sent ? 'success' : 'error';
-        wp_redirect( add_query_arg( array( 'page' => 'thormail', 'test_email' => $status ), admin_url( 'options-general.php' ) ) );
-        exit;
+		// Redirect back
+		$query_args = array( 'page' => 'thormail' );
+		if ( $sent ) {
+			$query_args['test_email'] = 'success';
+		} else {
+			$query_args['test_email'] = 'error';
+            $mailer = ThorMail_Mailer::get_instance();
+            $last_error = $mailer->get_last_error();
+            
+			if ( ! empty( $last_error ) ) {
+				$query_args['error_message'] = base64_encode( $last_error );
+			}
+		}
+
+		wp_redirect( add_query_arg( $query_args, admin_url( 'options-general.php' ) ) );
+		exit;
 	}
 }

@@ -41,7 +41,7 @@ function thormail_init() {
     // Only if configured
     $options = get_option( 'thormail_settings' );
     if ( ! empty( $options['api_key'] ) && ! empty( $options['workspace_id'] ) && ! empty( $options['base_url'] ) ) {
-        new ThorMail_Mailer();
+        ThorMail_Mailer::get_instance();
     }
 }
 add_action( 'plugins_loaded', 'thormail_init' );

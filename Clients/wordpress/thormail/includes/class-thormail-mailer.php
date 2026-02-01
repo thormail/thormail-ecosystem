@@ -9,11 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class ThorMail_Mailer {
 	private $api;
+    private static $instance = null;
+    private $last_error = '';
+
+    public static function get_instance() {
+        if ( null === self::$instance ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
 	public function __construct() {
 		$this->api = new ThorMail_API();
 		add_filter( 'pre_wp_mail', array( $this, 'send_email' ), 10, 2 );
 	}
+
+    public function get_last_error() {
+        return $this->last_error;
+    }
 
 	/**
 	 * Pre-hook to hijack wp_mail.
@@ -51,17 +64,27 @@ class ThorMail_Mailer {
         }
 
         $adapter_id = ! empty( $options['adapter_id'] ) ? $options['adapter_id'] : null;
+        $template_id = ! empty( $options['template_id'] ) ? $options['template_id'] : null;
+        $body_key    = ! empty( $options['body_key'] ) ? $options['body_key'] : null;
 
 		// Send
 		if ( count( $recipients ) === 1 ) {
 			$payload = array(
 				'to'      => $recipients[0],
 				'subject' => $subject,
-				'body'    => $message,
 				'type'    => 'EMAIL',
 			);
+            
+            if ( $body_key ) {
+                $payload['data'] = array( $body_key => $message );
+            } else {
+                $payload['body'] = $message;
+            }
             if ( $adapter_id ) {
                 $payload['adapterId'] = $adapter_id;
+            }
+            if ( $template_id ) {
+                $payload['templateId'] = $template_id;
             }
 			$result = $this->api->send( $payload );
 		} else {
@@ -71,11 +94,19 @@ class ThorMail_Mailer {
                 $payload = array(
                     'to'      => $recipient,
                     'subject' => $subject,
-                    'body'    => $message,
                     'type'    => 'EMAIL',
                 );
+
+                if ( $body_key ) {
+                    $payload['data'] = array( $body_key => $message );
+                } else {
+                    $payload['body'] = $message;
+                }
                 if ( $adapter_id ) {
                     $payload['adapterId'] = $adapter_id;
+                }
+                if ( $template_id ) {
+                    $payload['templateId'] = $template_id;
                 }
 
                 $res = $this->api->send( $payload );
@@ -89,24 +120,8 @@ class ThorMail_Mailer {
 		}
 
 		if ( is_wp_error( $result ) ) {
-            // Set PHPMailer ErrorInfo for debuggers
-             global $phpmailer;
-            if ( ! is_object( $phpmailer ) ) {
-                 if ( file_exists( ABSPATH . WPINC . '/class-phpmailer.php' ) ) {
-                    require_once ABSPATH . WPINC . '/class-phpmailer.php';
-                    // Check for PHPMailer namespace (WP 5.5+)
-                    if ( class_exists( 'PHPMailer\\PHPMailer\\PHPMailer' ) ) {
-                       $phpmailer = new PHPMailer\PHPMailer\PHPMailer( true );
-                    } else {
-                        $phpmailer = new PHPMailer( true );
-                    }
-                 }
-            }
-            if ( is_object( $phpmailer ) ) {
-                $phpmailer->ErrorInfo = $result->get_error_message();
-            }
-            
-            error_log( 'ThorMail Send Error: ' . $result->get_error_message() );
+            $this->last_error = $result->get_error_message();
+            error_log( 'ThorMail Send Error: ' . $this->last_error );
 			return false;
 		}
 
