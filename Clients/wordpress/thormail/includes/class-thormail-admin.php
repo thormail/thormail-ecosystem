@@ -15,7 +15,12 @@ class ThorMail_Admin {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_post_thormail_send_test', array( $this, 'handle_test_email' ) );
+        add_action( 'update_option_' . $this->option_name, array( $this, 'clear_health_cache' ) );
 	}
+
+    public function clear_health_cache() {
+        delete_transient( 'thormail_health_check' );
+    }
 
 
 	public function enqueue_scripts( $hook ) {
@@ -180,7 +185,7 @@ class ThorMail_Admin {
 
 	public function render_page() {
 		$options = get_option( $this->option_name );
-        // Check if enabled + configured
+		// Check if enabled + configured
 		$is_configured = ! empty( $options['api_key'] ) && ! empty( $options['workspace_id'] ) && ! empty( $options['base_url'] );
         $is_enabled = isset( $options['thormail_enabled'] ) && $options['thormail_enabled'] === '1';
 		
@@ -203,54 +208,140 @@ class ThorMail_Admin {
         <div class="wrap thormail-wrap">
             <div class="thormail-header">
                 <div class="thormail-logo">
-                    <h1>ThorMail Integration</h1>
+                    <img src="https://thormail.io/logo-text-dark.png" alt="ThorMail" style="height: 50px;">
                 </div>
-                <div class="thormail-status <?php echo ( $is_configured && $is_enabled ) ? 'active' : 'inactive'; ?>">
-					<?php 
-                    if ( ! $is_configured ) {
-                        _e( 'Missing Configuration', 'thormail' );
-                    } elseif ( ! $is_enabled ) {
-                        _e( 'Disabled', 'thormail' );
-                    } else {
-                        _e( 'Active', 'thormail' );
-                    }
-                    ?>
+                <div class="thormail-header-actions">
+                    <div class="thormail-status <?php echo ( $is_configured && $is_enabled ) ? 'active' : 'inactive'; ?>">
+						<?php 
+                        if ( ! $is_configured ) {
+                            _e( 'Missing Configuration', 'thormail' );
+                        } elseif ( ! $is_enabled ) {
+                            _e( 'Disabled', 'thormail' );
+                        } else {
+                            _e( 'Active', 'thormail' );
+                        }
+                        ?>
+                    </div>
                 </div>
             </div>
 
-            <form action="options.php" method="post" class="thormail-card">
-				<?php
-				settings_fields( $this->option_name );
-				do_settings_sections( 'thormail' );
-				submit_button( __( 'Save Changes', 'thormail' ) );
-				?>
-            </form>
-
-			<?php if ( $is_configured ) : ?>
-                <div class="thormail-card" style="margin-top: 20px;">
-                    <h3><?php _e( 'Send Test Email', 'thormail' ); ?></h3>
-                    <p><?php _e( 'Send a test email to verify your configuration.', 'thormail' ); ?></p>
-                    <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
-                        <input type="hidden" name="action" value="thormail_send_test">
-						<?php wp_nonce_field( 'thormail_test_email' ); ?>
-                        <table class="form-table">
-                            <tr>
-                                <th scope="row"><label for="thormail_to"><?php _e( 'To:', 'thormail' ); ?></label></th>
-                                <td>
-                                    <input type="email" name="thormail_to" id="thormail_to" value="<?php echo esc_attr( wp_get_current_user()->user_email ); ?>" class="regular-text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><label for="thormail_body"><?php _e( 'Body (HTML):', 'thormail' ); ?></label></th>
-                                <td>
-                                    <textarea name="thormail_body" id="thormail_body" rows="6" class="large-text code"><h1>Test Email</h1><p>This is a <strong>test</strong> email from ThorMail.</p></textarea>
-                                </td>
-                            </tr>
-                        </table>
-						<?php submit_button( __( 'Send Test', 'thormail' ), 'secondary' ); ?>
+            <div class="thormail-container">
+                <div class="thormail-main">
+                    <form action="options.php" method="post" class="thormail-card">
+                        <div class="thormail-card-header">
+                            <h2><?php _e( 'Settings', 'thormail' ); ?></h2>
+                            <p><?php _e( 'Configure your ThorMail connection details below.', 'thormail' ); ?></p>
+                        </div>
+						<?php
+						settings_fields( $this->option_name );
+						do_settings_sections( 'thormail' );
+						submit_button( __( 'Save Changes', 'thormail' ) );
+						?>
                     </form>
+
+					<?php if ( $is_configured ) : ?>
+                        <div class="thormail-card thormail-test-email">
+                            <div class="thormail-card-header">
+                                <h3><?php _e( 'Send Test Email', 'thormail' ); ?></h3>
+                                <p><?php _e( 'Send a test email to verify your configuration.', 'thormail' ); ?></p>
+                            </div>
+                            <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+                                <input type="hidden" name="action" value="thormail_send_test">
+								<?php wp_nonce_field( 'thormail_test_email' ); ?>
+                                <div class="thormail-form-row">
+                                    <label for="thormail_to"><?php _e( 'To:', 'thormail' ); ?></label>
+                                    <input type="email" name="thormail_to" id="thormail_to" value="<?php echo esc_attr( wp_get_current_user()->user_email ); ?>" class="regular-text" style="width: 100%;">
+                                </div>
+                                <div class="thormail-form-row">
+                                    <label for="thormail_body"><?php _e( 'Body (HTML):', 'thormail' ); ?></label>
+                                    <textarea name="thormail_body" id="thormail_body" rows="6" class="large-text code"><h1>Test Email</h1><p>This is a <strong>test</strong> email from ThorMail.</p></textarea>
+                                </div>
+								<?php submit_button( __( 'Send Test', 'thormail' ), 'secondary' ); ?>
+                            </form>
+                        </div>
+					<?php endif; ?>
                 </div>
-			<?php endif; ?>
+
+                <div class="thormail-sidebar">
+                    <?php if ( $is_configured ) : ?>
+                        <?php
+                        // Health Check Logic
+                        $health_status = get_transient( 'thormail_health_check' );
+                        if ( false === $health_status ) {
+                             $api = new ThorMail_API();
+                             $health_response = $api->get_health();
+                             if ( ! is_wp_error( $health_response ) && isset( $health_response['status'] ) && 'ok' === $health_response['status'] ) {
+                                 $health_status = $health_response;
+                                 set_transient( 'thormail_health_check', $health_status, 60 ); // Cache for 1 minute
+                             } else {
+                                 // Cache error/invalid state briefly to avoid hammering
+                                 set_transient( 'thormail_health_check', 'error', 60 );
+                                 $health_status = 'error';
+                             }
+                        }
+                        
+                        $is_healthy = is_array($health_status) && isset($health_status['status']) && $health_status['status'] === 'ok';
+                        ?>
+                        
+                        <div class="thormail-card thormail-info-card thormail-status-card">
+                            <h3><?php _e( 'ThorMail Service Status', 'thormail' ); ?></h3>
+                            <?php if ( $is_healthy ) : ?>
+                                <div class="thormail-system-status safe">
+                                    <span class="dashicons dashicons-yes-alt"></span> <strong><?php _e( 'All Systems Operational', 'thormail' ); ?></strong>
+                                </div>
+                                <ul class="thormail-service-list">
+                                    <?php if ( isset( $health_status['services'] ) ) : ?>
+                                        <?php foreach ( $health_status['services'] as $service => $info ) : ?>
+                                            <li>
+                                                <span><?php echo esc_html( $service ); ?></span>
+                                                <span class="thormail-status-ok"><?php echo esc_html( isset($info['status']) ? $info['status'] : 'OK' ); ?></span>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </ul>
+                                <div class="thormail-status-timestamp">
+                                    <?php echo esc_html( isset($health_status['timestamp']) ? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $health_status['timestamp'] ) ) : '' ); ?>
+                                </div>
+                            <?php else : ?>
+                                 <div class="thormail-system-status error">
+                                    <span class="dashicons dashicons-warning"></span> <strong><?php _e( 'System Unreachable', 'thormail' ); ?></strong>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="thormail-card thormail-info-card">
+                        <h3><?php _e( 'About ThorMail', 'thormail' ); ?></h3>
+                        <p><?php _e( 'ThorMail is a powerful email delivery service designed for developers and businesses.', 'thormail' ); ?></p>
+                        
+                        <h4><?php _e( 'Why ThorMail?', 'thormail' ); ?></h4>
+                        <ul class="thormail-feature-list">
+                            <li><span class="dashicons dashicons-randomize"></span> <?php _e( 'Automatic Failovers', 'thormail' ); ?></li>
+                            <li><span class="dashicons dashicons-unlock"></span> <?php _e( 'No Vendor Lock-in', 'thormail' ); ?></li>
+                            <li><span class="dashicons dashicons-performance"></span> <?php _e( 'Infinite Scalability', 'thormail' ); ?></li>
+                            <li><span class="dashicons dashicons-chart-bar"></span> <?php _e( 'Detailed Analytics', 'thormail' ); ?></li>
+                        </ul>
+
+                        <div class="thormail-actions">
+                            <a href="https://thormail.io" target="_blank" class="button button-primary thormail-btn-block">
+                                <?php _e( 'Visit Official Website', 'thormail' ); ?> <span class="dashicons dashicons-external"></span>
+                            </a>
+                            <a href="https://docs.thormail.io" target="_blank" class="button thormail-btn-block">
+                                <?php _e( 'Read Documentation', 'thormail' ); ?> <span class="dashicons dashicons-book"></span>
+                            </a>
+                            <a href="https://github.com/thormail/thormail-ecosystem/" target="_blank" class="button thormail-btn-block">
+                                <?php _e( 'Get Support', 'thormail' ); ?> <span class="dashicons dashicons-sos"></span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="thormail-card thormail-info-card thormail-version-card">
+                        <h3><?php _e( 'Need Help?', 'thormail' ); ?></h3>
+                        <p><?php _e( 'Check out our comprehensive guides to get the most out of ThorMail.', 'thormail' ); ?></p>
+                         <p class="thormail-footer-link">Running Version <?php echo THORMAIL_VERSION; ?></p>
+                    </div>
+                </div>
+            </div>
         </div>
 		<?php
 	}

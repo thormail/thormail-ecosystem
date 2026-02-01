@@ -30,6 +30,15 @@ class ThorMail_API {
 		return $this->request( '/v1/send', $payload );
 	}
 
+    /**
+     * Get server health status.
+     *
+     * @return array|WP_Error Response body on success, WP_Error on failure.
+     */
+    public function get_health() {
+        return $this->request( '/health', array(), 'GET' );
+    }
+
 	/**
 	 * Test the connection to the API.
 	 *
@@ -64,7 +73,6 @@ class ThorMail_API {
 
 		$args = array(
 			'method'    => $method,
-			'body'      => wp_json_encode( $body ),
 			'headers'   => array(
 				'Content-Type'   => 'application/json',
 				'Accept'         => 'application/json',
@@ -75,6 +83,10 @@ class ThorMail_API {
 			'timeout'   => $this->timeout,
 			'blocking'  => true,
 		);
+
+        if ( ! empty( $body ) || 'GET' !== $method ) {
+            $args['body'] = wp_json_encode( $body );
+        }
 
 		$max_retries = 3;
 		$attempt     = 0;
