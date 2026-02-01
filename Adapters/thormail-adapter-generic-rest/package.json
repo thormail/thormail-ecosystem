@@ -1,6 +1,6 @@
 {
     "name": "thormail-adapter-generic-rest",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Standard REST API adapter for ThorMail. Send messages via any RESTful service with configurable URL, method, and headers.",
     "main": "index.js",
     "type": "module",
