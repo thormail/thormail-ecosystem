@@ -60,7 +60,9 @@ class ThorMail_Mailer {
         
         // Handle Attachments: Log warning
         if ( ! empty( $attachments ) ) {
-            error_log( 'ThorMail Warning: Attachments are not currently supported by this plugin version.' );
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                error_log( 'ThorMail Warning: Attachments are not currently supported by this plugin version.' );
+            }
         }
 
         $adapter_id = ! empty( $options['adapter_id'] ) ? $options['adapter_id'] : null;
@@ -113,7 +115,9 @@ class ThorMail_Mailer {
                 if ( ! is_wp_error( $res ) ) {
                     $success_count++;
                 } else {
-                     error_log( 'ThorMail Partial Fail: ' . $res->get_error_message() );
+                     if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                        error_log( 'ThorMail Partial Fail: ' . $res->get_error_message() );
+                     }
                 }
             }
             return $success_count > 0;
@@ -121,7 +125,9 @@ class ThorMail_Mailer {
 
 		if ( is_wp_error( $result ) ) {
             $this->last_error = $result->get_error_message();
-            error_log( 'ThorMail Send Error: ' . $this->last_error );
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                error_log( 'ThorMail Send Error: ' . $this->last_error );
+            }
 			return false;
 		}
 

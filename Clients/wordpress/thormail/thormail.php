@@ -3,7 +3,7 @@
  * Plugin Name:       ThorMail Client
  * Plugin URI:        https://github.com/thormail/thormail-ecosystem
  * Description:       Official WordPress client for self-hosted ThorMail servers. Connect to your private email infrastructure via API.
- * Version:           1.0.0
+ * Version:           1.0.2
  * Requires at least: 5.7
  * Tested up to:      6.9
  * Requires PHP:      7.4
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'THORMAIL_VERSION', '1.0.0' );
+define( 'THORMAIL_VERSION', '1.0.2' );
 define( 'THORMAIL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'THORMAIL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -50,7 +50,7 @@ add_action( 'plugins_loaded', 'thormail_init' );
  * Add settings link to plugin list
  */
 function thormail_add_settings_link( $links ) {
-	$settings_link = '<a href="options-general.php?page=thormail">' . __( 'Settings', 'thormail' ) . '</a>';
+	$settings_link = '<a href="options-general.php?page=thormail">' . esc_html__( 'Settings', 'thormail' ) . '</a>';
 	array_unshift( $links, $settings_link );
 	return $links;
 }
