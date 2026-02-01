@@ -35,6 +35,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       EMAIL: ${EMAIL}
+      STARTUP_PASSWORD: ${STARTUP_PASSWORD}
     ports:
       - "4000:4000"
     volumes:
