@@ -39,6 +39,50 @@ In your ThorMail dashboard, navigate to **Adapters** and select **SMTP**.
 * **Secure**: Supports STARTTLS and SSL/TLS connections.
 * **Authentication**: Supports standard username/password authentication.
 * **Lightweight**: Built on top of `nodemailer`.
+* **Attachments**: Supports sending files via URL.
+
+## Attachments
+
+You can send attachments by including an `attachments` array in the `data` object. Each attachment should have a `filename` and a `path` (or `href`).
+
+```json
+{
+  "attachments": [
+    {
+      "filename": "document.pdf",
+      "path": "https://example.com/files/document.pdf",
+      "contentType": "application/pdf"
+    },
+    {
+      "filename": "logo.png",
+      "href": "https://example.com/logo.png",
+      "cid": "unique-logo-id",
+      "contentDisposition": "inline"
+    }
+  ]
+}
+```
+
+The adapter supports all [Nodemailer attachment options](https://nodemailer.com/message/attachments) that are JSON-serializable.
+
+### Important Considerations
+
+* **Recommended**: Use `path` or `href` for remote files. This is the most efficient method and fully supported.
+* **content**: Due to the decoupled nature of ThorMail and its queue system, **Buffers and Streams are NOT supported** as they cannot be serialized to the queue.
+  * You may use `content` as a **String**, but use this only when strictly necessary.
+  * **Warning**: Large strings in `content` may hit queue size limits and are inefficient. Use `path` or `href` whenever possible.
+
+* **Security**: Local file paths in `path` or `href` are **blocked**. You must use `http://` or `https://` URLs.
+
+## Inline Images (CID)
+
+To use an image inline in your HTML body:
+
+1. Provide a `cid` in the attachment object.
+2. Reference it in your HTML: `<img src="cid:unique-logo-id"/>`.
+
+> [!NOTE]
+> For maximum efficiency, provide a direct URL to the file. The adapter streams the content directly from the URL to the SMTP server, minimizing memory usage. Ensure the URL is publicly accessible or includes necessary authentication tokens.
 
 ## Usage with Gmail
 

@@ -145,6 +145,33 @@ export default class SMTPAdapter {
                 html: body, // ThorMail body is HTML
             };
 
+            if (data.attachments && Array.isArray(data.attachments)) {
+                mailOptions.attachments = data.attachments.map(att => {
+                    // Security Check: Prevent local file access
+                    if (att.path && typeof att.path === 'string') {
+                        const lowerPath = att.path.toLowerCase();
+                        if (!lowerPath.startsWith('http://') && !lowerPath.startsWith('https://')) {
+                            const error = new Error('Security Error: Local file paths are not allowed. Use \'path\' or \'href\' with a valid URL.');
+                            error.code = 'E_SECURITY';
+                            error.responseCode = 553;
+                            throw error;
+                        }
+                    }
+                    if (att.href && typeof att.href === 'string') {
+                        const lowerHref = att.href.toLowerCase();
+                        if (!lowerHref.startsWith('http://') && !lowerHref.startsWith('https://')) {
+                            const error = new Error('Security Error: Local file paths are not allowed. Use \'path\' or \'href\' with a valid URL.');
+                            error.code = 'E_SECURITY';
+                            error.responseCode = 553;
+                            throw error;
+                        }
+                    }
+                    return att;
+                });
+            } else {
+                mailOptions.attachments = [];
+            }
+
             // Handle data if needed, though for standard SMTP usually just HTML content is enough.
             // Some SMTP providers might support custom headers for tracking.
             if (data && typeof data === 'object') {
@@ -186,6 +213,11 @@ export default class SMTPAdapter {
                 'ENOTFOUND' // Could be temporary DNS issue
             ].includes(error.code);
 
+
+            const isLocalError = [
+                'E_SECURITY'
+            ].includes(error.code);
+
             const isSMTP4xx = error.responseCode >= 400 && error.responseCode < 500;
 
             // 2. Explicitly Permanent Errors (Configuration/Auth/Data)
@@ -196,6 +228,7 @@ export default class SMTPAdapter {
 
             // Determine final status
             let isTemporary = isNetworkError || isSMTP4xx;
+
 
             // Override if strictly permanent
             if (isAuthError || isSMTP5xx) {
@@ -210,7 +243,9 @@ export default class SMTPAdapter {
             return {
                 success: false,
                 error: finalMessage,
-                isTemporary
+                code: error.code,
+                isTemporary,
+                isLocalError
             };
         }
     }
