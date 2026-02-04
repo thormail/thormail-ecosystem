@@ -84,6 +84,66 @@ To use an image inline in your HTML body:
 > [!NOTE]
 > For maximum efficiency, provide a direct URL to the file. The adapter streams the content directly from the URL to the SMTP server, minimizing memory usage. Ensure the URL is publicly accessible or includes necessary authentication tokens.
 
+## Custom Headers
+
+You can include custom headers in your emails for various purposes, such as tracking, subaccount routing, or deliverability optimization.
+
+### Usage in Email Data
+
+Pass a `headers` object within the `data` parameter when sending an email to inject per-email headers:
+
+```json
+{
+  "headers": {
+    "X-Custom-Header": "value",
+    "X-MC-Subaccount": "my-subaccount-id"
+  }
+}
+```
+
+### Global Configuration
+
+You can also define **Global Custom Headers** in the adapter configuration settings. These headers will be applied to **all** emails sent via this adapter instance. If a header with the same key is provided in the `data` object, it will override the global setting.
+
+### Common Use Cases
+
+#### Mailchimp / Mandrill Subaccounts
+
+If you are using Mailchimp Transactional (Mandrill) via SMTP, you can use the `X-MC-Subaccount` header to send emails on behalf of a specific subaccount. This allows you to segregate reputation and stats for different customers or environments.
+
+```json
+{
+  "headers": {
+    "X-MC-Subaccount": "customer-123"
+  }
+}
+```
+
+#### Internal Tracking
+
+Use custom headers to tag emails with internal reference IDs for logging and auditing on your own end or via webhooks.
+
+```json
+{
+  "headers": {
+    "X-Entity-Ref-ID": "order-5589",
+    "X-Campaign-ID": "welcome-series-v2"
+  }
+}
+```
+
+#### Deliverability
+
+Headers like `List-Unsubscribe` can be manually added if your SMTP provider doesn't automatically handle them, helping to improve sender reputation and allow one-click unsubscribe in supported email clients.
+
+```json
+{
+  "headers": {
+    "List-Unsubscribe": "<mailto:unsubscribe@example.com>"
+  }
+}
+```
+
 ## Usage with Gmail
 
 If you are using Gmail, you must use an **App Password** if you have 2-Step Verification enabled.

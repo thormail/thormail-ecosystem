@@ -151,7 +151,7 @@ export default class SMTPAdapter {
                 to: to,
                 subject: subject,
                 html: body, // ThorMail body is HTML
-                headers: this._parseHeaders(this.config.customHeaders)
+                headers: this._parseHeaders(this.config.customHeaders, data.headers)
             };
 
             if (data.attachments && Array.isArray(data.attachments)) {
@@ -284,9 +284,10 @@ export default class SMTPAdapter {
      * @param {Object|Array|string} headersConfig - Configuration for custom headers.
      * @returns {Object} Parsed headers object.
      */
-    _parseHeaders(headersConfig) {
+    _parseHeaders(headersConfig, dataHeaders = {}) {
         const headers = {};
-        if (!headersConfig) return headers;
+        if (!dataHeaders) dataHeaders = {};
+        if (!headersConfig) return { ...dataHeaders };
 
         if (Array.isArray(headersConfig)) {
             headersConfig.forEach(h => {
@@ -303,6 +304,6 @@ export default class SMTPAdapter {
                 // Ignore invalid JSON
             }
         }
-        return headers;
+        return { ...headers, ...dataHeaders };
     }
 }
