@@ -70,6 +70,14 @@ export default class SMTPAdapter {
                 group: 'defaults'
             },
             {
+                name: 'customHeaders',
+                label: 'Custom Headers',
+                type: 'customHeaders',
+                required: false,
+                hint: 'Optional HTTP headers to include in the request (e.g., Authorization, X-API-Key).',
+                group: 'authentication'
+            },
+            {
                 name: 'custom_name',
                 label: 'Adapter Name',
                 type: 'text',
@@ -143,6 +151,7 @@ export default class SMTPAdapter {
                 to: to,
                 subject: subject,
                 html: body, // ThorMail body is HTML
+                headers: this._parseHeaders(this.config.customHeaders)
             };
 
             if (data.attachments && Array.isArray(data.attachments)) {
@@ -268,5 +277,32 @@ export default class SMTPAdapter {
      */
     async webhook(event, headers) {
         return null;
+    }
+
+    /**
+     * Parses custom headers configuration.
+     * @param {Object|Array|string} headersConfig - Configuration for custom headers.
+     * @returns {Object} Parsed headers object.
+     */
+    _parseHeaders(headersConfig) {
+        const headers = {};
+        if (!headersConfig) return headers;
+
+        if (Array.isArray(headersConfig)) {
+            headersConfig.forEach(h => {
+                if (h.key && h.value) {
+                    headers[h.key] = h.value;
+                }
+            });
+        } else if (typeof headersConfig === 'object') {
+            Object.assign(headers, headersConfig);
+        } else if (typeof headersConfig === 'string') {
+            try {
+                Object.assign(headers, JSON.parse(headersConfig));
+            } catch (e) {
+                // Ignore invalid JSON
+            }
+        }
+        return headers;
     }
 }

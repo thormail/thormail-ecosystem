@@ -1,6 +1,6 @@
 {
     "name": "thormail-adapter-smtp",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Universal SMTP adapter for ThorMail",
     "main": "./index.js",
     "exports": "./index.js",
