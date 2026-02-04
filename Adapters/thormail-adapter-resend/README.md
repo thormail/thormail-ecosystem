@@ -38,6 +38,37 @@ In your ThorMail dashboard, navigate to **Connections** and select **Resend**.
 * **Rich Content**: Full support for HTML, Attachments, Tags, and Custom Headers.
 * **SHA1 Idempotency**: Secures idempotency keys using SHA1 hashing.
 
+## Attachments
+
+You can send attachments by including an `attachments` array in the `data` object.
+
+```json
+{
+  "attachments": [
+    {
+      "filename": "invoice.pdf",
+      "path": "https://example.com/invoice.pdf"
+    },
+    {
+      "filename": "logo.png",
+      "path": "https://example.com/logo.png",
+      "cid": "unique-logo-id"
+    }
+  ]
+}
+```
+
+### Supported Properties
+
+* **filename**: Name of the file.
+* **path**: URL of the file.
+  * **Security**: Must be a valid `http://` or `https://` URL. Local paths are **blocked**.
+* **content**: File content as a string. The adapter automatically converts this to base64 for the Resend API.
+* **cid** (or `content_id`): Content ID for inline images.
+
+> [!NOTE]
+> For maximum efficiency, use `path` with a public URL. This allows Resend to fetch the file directly.
+
 ## License
 
 ISC

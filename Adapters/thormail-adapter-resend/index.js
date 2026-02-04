@@ -340,13 +340,36 @@ export default class ResendAdapter {
             // Map standard email fields if present in data
             if (data) {
                 if (data.text) payload.text = data.text;
-                if (data.attachments) payload.attachments = data.attachments;
                 if (data.cc) payload.cc = Array.isArray(data.cc) ? data.cc.flat() : [data.cc];
                 if (data.bcc) payload.bcc = Array.isArray(data.bcc) ? data.bcc.flat() : [data.bcc];
                 if (data.replyTo) payload.reply_to = data.replyTo;
                 // Fallback for Reply-To in headers if not in top-level data
                 else if (headers['Reply-To']) payload.reply_to = headers['Reply-To'];
             }
+
+            if (data.attachments && Array.isArray(data.attachments)) {
+                payload.attachments = data.attachments.map(att => {
+                    // Security Check: Prevent local file access
+                    if (att.path && typeof att.path === 'string') {
+                        const lowerPath = att.path.toLowerCase();
+                        if (!lowerPath.startsWith('http://') && !lowerPath.startsWith('https://')) {
+                            const error = new Error('Security Error: Local file paths are not allowed. Use \'path\' or \'href\' with a valid URL.');
+                            error.code = 'E_SECURITY';
+                            error.responseCode = 553;
+                            throw error;
+                        }
+                    }
+                    return {
+                        filename: att.filename,
+                        content: att.content ? Buffer.from(att.content).toString('base64') : undefined,
+                        path: typeof att.path === 'string' ? att.path : undefined,
+                        content_id: att.contentId || att.content_id || att.cid || undefined,
+                    }
+                });
+            } else {
+                payload.attachments = [];
+            }
+
 
             const requestOptions = {};
             // Ref: https://resend.com/docs/api-reference/introduction#idempotency

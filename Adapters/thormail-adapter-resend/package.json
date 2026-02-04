@@ -1,6 +1,6 @@
 {
     "name": "thormail-adapter-resend",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Resend adapter for ThorMail",
     "main": "./index.js",
     "exports": "./index.js",
