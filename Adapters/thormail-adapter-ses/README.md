@@ -43,6 +43,7 @@ In your ThorMail dashboard, navigate to **Connections** and select **Amazon SES*
 ## Sending Attachments
 
 Add attachments via the `data.attachments` array. The adapter supports:
+
 * **Remote URLs**: Downloads files from HTTP/HTTPS URLs (streaming for efficiency)
 * **Direct content**: Base64-encoded or raw string content
 * **Inline images**: Use `cid` property for embedding images in HTML
