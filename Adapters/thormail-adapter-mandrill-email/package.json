@@ -1,0 +1,23 @@
+{
+    "name": "thormail-adapter-mandrill-email",
+    "version": "1.0.0",
+    "description": "Mandrill (Mailchimp Transactional) email adapter for ThorMail",
+    "main": "./index.js",
+    "exports": "./index.js",
+    "type": "module",
+    "files": [
+        "index.js",
+        "README.md"
+    ],
+    "author": "ThorMail",
+    "license": "ISC",
+    "keywords": [
+        "thormail",
+        "thormail-adapter",
+        "email",
+        "mandrill",
+        "mailchimp",
+        "transactional"
+    ],
+    "dependencies": {}
+}
