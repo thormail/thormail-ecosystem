@@ -122,14 +122,15 @@ console.log('Queued with ID:', result.id);
 
 > **Note:** "Official" means these adapters are developed and maintained by the ThorMail team. They are **not** affiliated with or endorsed by the service providers themselves (e.g., OneSignal, SendGrid, etc.).
 
-| Package | Type | Description | NPM |
-|---------|------|-------------|-----|
-| `thormail-adapter-onesignal` | `EMAIL` | OneSignal Push Notifications | [![npm](https://img.shields.io/npm/v/thormail-adapter-onesignal)](https://www.npmjs.com/package/thormail-adapter-onesignal) |
-| `thormail-adapter-resend` | `EMAIL` | Resend Email API | [![npm](https://img.shields.io/npm/v/thormail-adapter-resend)](https://www.npmjs.com/package/thormail-adapter-resend) |
-| `thormail-adapter-ses` | `EMAIL` | Amazon SES | [![npm](https://img.shields.io/npm/v/thormail-adapter-ses)](https://www.npmjs.com/package/thormail-adapter-ses) |
-| `thormail-adapter-smtp` | `EMAIL` | Custom SMTP Server | [![npm](https://img.shields.io/npm/v/thormail-adapter-smtp)](https://www.npmjs.com/package/thormail-adapter-smtp) |
-| `thormail-adapter-telegram` | `TELEGRAM` | Telegram Bot API | [![npm](https://img.shields.io/npm/v/thormail-adapter-telegram)](https://www.npmjs.com/package/thormail-adapter-telegram) |
-| `thormail-adapter-generic-rest` | `REST` | Generic REST API Adapter | [![npm](https://img.shields.io/npm/v/thormail-adapter-generic-rest)](https://www.npmjs.com/package/thormail-adapter-generic-rest) |
+| Service Name | Package | Type | Description | NPM | Link |
+|--------------|---------|------|-------------|-----|------|
+| Mailchimp Transactional | `thormail-adapter-mandrill-email` | `EMAIL` | High-volume transactional email delivery platform by Mailchimp. | [![npm](https://img.shields.io/npm/v/thormail-adapter-mandrill-email)](https://www.npmjs.com/package/thormail-adapter-mandrill-email) | [mailchimp.com](https://mailchimp.com/developer/transactional/) |
+| OneSignal | `thormail-adapter-onesignal` | `EMAIL` | Market-leading customer engagement platform for push notifications. | [![npm](https://img.shields.io/npm/v/thormail-adapter-onesignal)](https://www.npmjs.com/package/thormail-adapter-onesignal) | [onesignal.com](https://onesignal.com/) |
+| Resend | `thormail-adapter-resend` | `EMAIL` | Modern, developer-first email API for building transactional emails. | [![npm](https://img.shields.io/npm/v/thormail-adapter-resend)](https://www.npmjs.com/package/thormail-adapter-resend) | [resend.com](https://resend.com/) |
+| Amazon SES | `thormail-adapter-ses` | `EMAIL` | Scalable, cost-effective, and reliable cloud-based email service. | [![npm](https://img.shields.io/npm/v/thormail-adapter-ses)](https://www.npmjs.com/package/thormail-adapter-ses) | [aws.amazon.com](https://aws.amazon.com/ses/) |
+| SMTP | `thormail-adapter-smtp` | `EMAIL` | Standard protocol for sending emails via any custom mail server. | [![npm](https://img.shields.io/npm/v/thormail-adapter-smtp)](https://www.npmjs.com/package/thormail-adapter-smtp) | - |
+| Telegram | `thormail-adapter-telegram` | `TELEGRAM` | Cloud-based messaging app with an extensive API for bots. | [![npm](https://img.shields.io/npm/v/thormail-adapter-telegram)](https://www.npmjs.com/package/thormail-adapter-telegram) | [telegram.org](https://core.telegram.org/bots) |
+| Generic REST | `thormail-adapter-generic-rest` | `REST` | Universal adapter to connect with any RESTful API endpoint. | [![npm](https://img.shields.io/npm/v/thormail-adapter-generic-rest)](https://www.npmjs.com/package/thormail-adapter-generic-rest) | - |
 
 #### About the `type` Field
 
