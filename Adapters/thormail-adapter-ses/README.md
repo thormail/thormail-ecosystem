@@ -35,9 +35,43 @@ In your ThorMail dashboard, navigate to **Connections** and select **Amazon SES*
 ## Features
 
 * **AWS SDK v3 (SESv2)**: Built using the latest `@aws-sdk/client-sesv2` for maximum performance and security.
+* **Attachment Support**: Send emails with file attachments and inline images (no external dependencies).
 * **Idempotency & Tracking**: Automatically injects `ThorMail-Idempotency-Key` tag to emails for tracking in AWS Console.
 * **Smart Error Handling**: Automatically detects throttling (`ThrottlingException`, `TooManyRequestsException`) and temporarily pauses sending.
-* **Secure**: Uses official AWS signature version 4 authentication.
+* **Secure**: Uses official AWS signature version 4 authentication. Attachments only allowed from remote URLs (HTTP/HTTPS).
+
+## Sending Attachments
+
+Add attachments via the `data.attachments` array. The adapter supports:
+* **Remote URLs**: Downloads files from HTTP/HTTPS URLs (streaming for efficiency)
+* **Direct content**: Base64-encoded or raw string content
+* **Inline images**: Use `cid` property for embedding images in HTML
+
+```javascript
+// Example with ThorMail API
+{
+  to: "user@example.com",
+  subject: "Invoice Attached",
+  body: "<p>Please find your invoice attached.</p><img src='cid:logo123'>",
+  data: {
+    attachments: [
+      {
+        filename: "invoice.pdf",
+        path: "https://example.com/invoices/123.pdf"  // Remote URL
+      },
+      {
+        filename: "logo.png",
+        content: "base64encodedcontent...",
+        contentType: "image/png",
+        cid: "logo123"  // Inline image
+      }
+    ]
+  }
+}
+```
+
+> [!NOTE]
+> For security, local file paths (e.g., `file://`, `/etc/passwd`) are **not allowed**. Only HTTP/HTTPS URLs are accepted.
 
 ## Getting AWS Credentials
 

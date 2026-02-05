@@ -1,6 +1,6 @@
 {
     "name": "thormail-adapter-ses",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "Amazon SES adapter for ThorMail using AWS SDK v3 (SESv2 Client)",
     "main": "./index.js",
     "exports": "./index.js",
@@ -22,5 +22,8 @@
     ],
     "dependencies": {
         "@aws-sdk/client-sesv2": "^3.0.0"
+    },
+    "devDependencies": {
+        "aws-sdk-client-mock": "^4.1.0"
     }
 }
