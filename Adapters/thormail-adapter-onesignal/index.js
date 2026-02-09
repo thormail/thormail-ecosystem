@@ -97,7 +97,7 @@ export default class OneSignalAdapter {
     async _request(method, endpoint, body = null) {
         const headers = {
             'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': `Basic ${this.config.apiKey}`
+            'Authorization': `key ${this.config.apiKey}`
         };
 
         const options = {
