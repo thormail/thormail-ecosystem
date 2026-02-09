@@ -219,6 +219,13 @@ export default class OneSignalAdapter {
             }
 
             const result = await this._request('POST', '/notifications', payload);
+            if (!result.id) {
+                return {
+                    success: false,
+                    error: result?.errors || result,
+                    isTemporary: false
+                };
+            }
 
             return {
                 success: true,
