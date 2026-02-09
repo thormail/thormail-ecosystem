@@ -88,7 +88,7 @@ export default class OneSignalAdapter {
      */
     constructor(config) {
         this.config = config;
-        this.baseUrl = 'https://onesignal.com/api/v1';
+        this.baseUrl = 'https://api.onesignal.com';
     }
 
     /**
@@ -97,7 +97,7 @@ export default class OneSignalAdapter {
     async _request(method, endpoint, body = null) {
         const headers = {
             'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': `key ${this.config.apiKey}`
+            'Authorization': `Key ${this.config.apiKey}`
         };
 
         const options = {
@@ -163,9 +163,11 @@ export default class OneSignalAdapter {
     async sendMail({ to, subject, body, data, idempotencyKey }) {
         try {
             // Prepare payload
+            // Using email_to instead of include_email_tokens to auto-create
+            // the email subscription if it doesn't exist in OneSignal
             const payload = {
                 app_id: this.config.appId,
-                include_email_tokens: [to],
+                email_to: [to],
                 email_from_address: this.config.fromEmail
             };
 
@@ -218,7 +220,7 @@ export default class OneSignalAdapter {
                 }
             }
 
-            const result = await this._request('POST', '/notifications', payload);
+            const result = await this._request('POST', '/notifications?c=email', payload);
             if (!result.id) {
                 return {
                     success: false,
