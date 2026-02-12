@@ -61,6 +61,8 @@ export interface MessagePayload {
     scheduledAt?: string;
     /** Specific adapter to route to (bypasses rule engine) */
     adapterId?: string;
+    /** Idempotency key for safe retries */
+    idempotencyKey?: string;
 }
 
 export interface RecipientObject {

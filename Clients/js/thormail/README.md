@@ -138,8 +138,15 @@ const result = await client.send({
   body: 'You have a new message from John',
   data: {
     sound: 'default',
-    badge: 1
   }
+});
+
+// Send with Idempotency Key (Safe Retry)
+const result = await client.send({
+  to: 'user@example.com',
+  subject: 'Payment Receipt',
+  body: '<h1>Receipt #123</h1>',
+  idempotencyKey: 'payment-receipt-123'
 });
 ```
 

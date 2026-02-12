@@ -373,9 +373,9 @@ class ThorMailClient {
      * @throws {ThorMailError} If request fails after all retries
      * @private
      */
-    async _request(endpoint, body) {
+    async _request(endpoint, body, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
-        const headers = this._buildHeaders();
+        const headers = { ...this._buildHeaders(), ...(options.headers || {}) };
         let lastError = null;
 
         for (let attempt = 0; attempt <= this.retryConfig.maxRetries; attempt++) {
@@ -583,7 +583,20 @@ class ThorMailClient {
             }
         }
 
-        return this._request('/v1/send', payload);
+        // Extract idempotency key if present
+        const { idempotencyKey, ...restPayload } = payload;
+        const requestOptions = {};
+
+        if (idempotencyKey) {
+            if (typeof idempotencyKey !== 'string') {
+                throw new ThorMailError('Invalid "idempotencyKey" format, must be string', 400, 'VALIDATION_ERROR');
+            }
+            requestOptions.headers = {
+                'x-idempotency-key': idempotencyKey
+            };
+        }
+
+        return this._request('/v1/send', restPayload, requestOptions);
     }
 
     /**

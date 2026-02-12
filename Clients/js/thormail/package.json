@@ -1,6 +1,6 @@
 {
     "name": "@thormail/client",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Official Node.js client for ThorMail Self-Hosted API - Secure queue-based delivery for email, SMS, push notifications",
     "main": "src/index.js",
     "module": "src/index.js",
