@@ -368,7 +368,8 @@ class ThorMailClient {
     /**
      * Makes an HTTP request with retry logic and resilience
      * @param {string} endpoint - API endpoint (e.g., '/v1/send')
-     * @param {Object} body - Request body
+     * @param {Object} [body] - Request body (optional for GET)
+     * @param {Object} [options] - Request options
      * @returns {Promise<Object>} Response data
      * @throws {ThorMailError} If request fails after all retries
      * @private
@@ -376,10 +377,11 @@ class ThorMailClient {
     async _request(endpoint, body, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
         const headers = { ...this._buildHeaders(), ...(options.headers || {}) };
+        const method = options.method || 'POST';
         let lastError = null;
 
         for (let attempt = 0; attempt <= this.retryConfig.maxRetries; attempt++) {
-            this._log(`Request attempt ${attempt + 1}/${this.retryConfig.maxRetries + 1}`, { endpoint });
+            this._log(`Request attempt ${attempt + 1}/${this.retryConfig.maxRetries + 1}`, { endpoint, method });
 
             try {
                 // Create abort controller for timeout
@@ -388,12 +390,18 @@ class ThorMailClient {
 
                 let response;
                 try {
-                    response = await fetch(url, {
-                        method: 'POST',
+                    const fetchOptions = {
+                        method,
                         headers,
-                        body: JSON.stringify(body),
                         signal: controller.signal
-                    });
+                    };
+
+                    // Only include body if not GET or HEAD
+                    if (method !== 'GET' && method !== 'HEAD' && body) {
+                        fetchOptions.body = JSON.stringify(body);
+                    }
+
+                    response = await fetch(url, fetchOptions);
                 } finally {
                     clearTimeout(timeoutId);
                 }
@@ -662,6 +670,26 @@ class ThorMailClient {
         }
 
         return this._request('/v1/send-batch', payload);
+    }
+
+    /**
+     * Check the status of a specific job
+     * 
+     * @param {string|number} id - Job ID
+     * @returns {Promise<Object>} Job status and details
+     * @throws {ThorMailError} If the request fails
+     * 
+     * @example
+     * ```javascript
+     * const status = await client.status('12345');
+     * console.log('Job Status:', status);
+     * ```
+     */
+    async status(id) {
+        if (!id) {
+            throw new ThorMailError('Job ID is required', 400, 'VALIDATION_ERROR');
+        }
+        return this._request(`/v1/status/${id}`, null, { method: 'GET' });
     }
 
     // ==========================================================================

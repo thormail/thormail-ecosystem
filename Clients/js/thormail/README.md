@@ -166,6 +166,21 @@ console.log(`Queued ${result.count} messages`);
 console.log('Queue IDs:', result.ids);
 ```
 
+### Check Job Status
+
+```javascript
+try {
+  const jobStatus = await client.status('12345');
+  console.log('Status:', jobStatus.status); // success, bounced, failed, etc.
+  
+  if (jobStatus.status === 'failed') {
+    console.error('Error:', jobStatus.error);
+  }
+} catch (error) {
+  console.error('Failed to get status:', error.message);
+}
+```
+
 ## API Reference
 
 ### `ThorMailClient`

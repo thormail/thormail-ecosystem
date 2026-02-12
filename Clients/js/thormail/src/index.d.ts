@@ -105,6 +105,19 @@ export interface BatchResponse {
     ids: number[];
 }
 
+export interface StatusResponse {
+    /** Current status */
+    status: 'success' | 'bounced' | 'failed' | 'pending' | 'discarded' | 'processing' | 'unknown';
+    /** Provider identifier */
+    provider_identifier?: string;
+    /** Raw provider entity/response */
+    response?: any;
+    /** Job creation timestamp */
+    created_at: string;
+    /** Error details if failed */
+    error?: any;
+}
+
 /**
  * Custom error class for ThorMail API errors
  */
@@ -190,6 +203,14 @@ export class ThorMailClient {
      * @throws ThorMailError If the request fails
      */
     sendBatch(payload: BatchPayload): Promise<BatchResponse>;
+
+    /**
+     * Check the status of a specific job
+     * @param id - Job ID
+     * @returns Job status and details
+     * @throws ThorMailError If the request fails
+     */
+    status(id: string | number): Promise<StatusResponse>;
 
     /**
      * Updates the client configuration
